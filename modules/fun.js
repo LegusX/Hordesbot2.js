@@ -1,3 +1,5 @@
+const rp = require('request-promise');
+const Discord = require("discord.js")
 const randomQuestions = [
 	"Would you rather feel like you have a sense of purpose in life, money, or happiness?",
 	"Why are things named as they are? Why is an apple an apple, why isn't it an orange?",
@@ -19,6 +21,10 @@ const randomQuestions = [
 ]
 //^All submitted by the community
 
+const xkcd = {
+	uri: "http://xkcd.com/info.0.json"
+}
+
 //Totally stolen from the MDN docs :D
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
@@ -28,7 +34,7 @@ module.exports = class fun {
 	constructor(client,bot) {
 		this.client = client
 		this.bot = bot
-		this.commands = ["die", "revive", "tassels", "tree"]
+		this.commands = ["die", "revive", "tassels", "tree", "xkcd"]
 	}
 	die(msg) {
 		if (msg.member.displayName.includes("The Ghost of")) return msg.reply("You're already a ghost, you can't die again silly")
@@ -51,5 +57,20 @@ module.exports = class fun {
 		if(message.member.displayName.includes("🎄")) message.member.setNickname(message.member.displayName.replace("🎄", ""))
 		else message.member.setNickname(message.member.displayName+"🎄")
 		message.reply("TREES FOR EVERYONE!")
+	}
+	xkcd(message) {
+		rp(xkcd).then((r)=>{
+			var result = JSON.parse(r)
+			var send = new Discord.RichEmbed()
+			.setImage(result.img)
+			.setDescription(result.alt)
+			.setTitle(result.title)
+			message.channel.send(send)
+		}).catch((e)=>{
+			console.log(e)
+		})
+	}
+	help(message) {
+		
 	}
 }

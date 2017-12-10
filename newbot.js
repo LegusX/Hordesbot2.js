@@ -42,9 +42,17 @@ client.on("ready", ()=>{
     bot.greentick = bot.hordes.emojis.find("name", "greentick");
     bot.penaltytick = bot.hordes.emojis.find("name", "penaltytick");
     bot.reactionsWatch = [bot.redtick.id, bot.greentick.id, bot.penaltytick.id];
-})
+    client.user.setGame("Functional!")
+});
 
 client.on("message", (msg)=>{
+
+    if(msg.content.startsWith(bot.prefix+"ping")) {
+            return msg.channel.send(new Date().getTime() - msg.createdTimestamp + " ms");
+    }
+	if (msg.content.startsWith(bot.prefix+"help")) {
+		return;
+	}
 	if (msg.content[0] === bot.prefix && msg.channel.type !== "dm" && msg.channel.type !== "group" && msg.channel.id === "240595502167490562") {
 		var command = msg.content.split(" ")[0].replace(bot.prefix, "").toLowerCase()
 		for(var i=0;i<moduleList.length;i++) {
