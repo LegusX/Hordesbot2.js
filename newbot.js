@@ -69,7 +69,7 @@ client.on("ready", ()=>{
     // client.guilds.find("id", "221772925282287627").channels.find("id", "240595502167490562").send("I am now online :D")
 });
 
-client.on("message", (msg)=>{
+client.on("message", async msg => {
 	if (msg.channel.type === "dm" || msg.channel.type === "group" || msg.author.id === "243120137010413568") return;
 	if(msg.channel.id !== "240595502167490562" && msg.content[0] === bot.prefix) {
 		msg.author.send("Please don't use bot commands outside of #off-topic")

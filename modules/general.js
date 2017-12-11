@@ -5,7 +5,7 @@ module.exports = class General {
 		this.commands = ["ping", "info"]
 	}
 	ping(msg) {
-        msg.channel.send(new Date().getTime() - msg.createdTimestamp + " ms");
+		return message.edit(message.createdTimestamp - msg.createdTimestamp + " ms");
 	}
 	info(message) {
 		var embed = new Discord.RichEmbed()
