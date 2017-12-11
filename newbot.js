@@ -18,6 +18,7 @@ var moduleList = []
 var helpList = []
 var cooldown = []
 global.cooldownTime = 15
+global.mods = ["227376221351182337", "190313064367652864", "117993898537779207", "126288853576318976", "184784933330354177", "126288853576318976", "298984060049686528"]
 
 fs.readdir("./modules/", (err, files) => {
     if(err) console.error(err);
@@ -49,6 +50,7 @@ function getRandomColor() {
 }
 
 function cooloff(id) {
+	if (mods.includes(id)) return;
 	cooldown.push(id)
 	setTimeout(function(id){
 		cooldown.splice(cooldown.indexOf(id), 1)
