@@ -2,7 +2,7 @@ const Discord = require("discord.js")
 module.exports = class General {
 	constructor(client) {
 		this.client = client
-		this.commands = ["ping", "info"]
+		this.commands = ["ping", "info", "test"]
 	}
 	ping(msg) {
 		return message.edit(message.createdTimestamp - msg.createdTimestamp + " ms");
@@ -20,5 +20,8 @@ module.exports = class General {
 		message.addField("`"+bot.prefix+"ping`", "Gets a rough estimate of the ping for HordesBot")
 		.addField("`"+bot.prefix+"info`", "Just some info about HordesBot")
 		return message
+	}
+	test(message) {
+		message.reply("IT WORKED")
 	}
 }
