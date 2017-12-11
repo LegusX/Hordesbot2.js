@@ -35,12 +35,12 @@ module.exports = class reports {
 	constructor(client,bot) {
 		this.client = client
 		this.bot = bot;
-		this.commands = ["test"]
+		this.commands = []
 		client.on("messageReactionAdd", (reaction,user)=>{
 			var message = reaction.message
 			if(reaction.message.channel.id!=="388460142284505102") return;
 			if (user.id === "240613206442246144") return;
-			if(!message.guild.members.find("id", user.id).roles.array().includes("227720287083298816")/*CM role*/ && user.id !== "117993898537779207"/*Dek*/ && user.id !=="349377841416110081"/*dhwty*/) return;
+			if(!message.guild.members.find("id", user.id).roles.exists("id", "227720287083298816")/*CM role*/ && user.id !== "117993898537779207"/*Dek*/ && user.id !=="349377841416110081"/*dhwty*/) return;
 			if (!bot.reactionsWatch.includes(reaction.emoji.id)) return;
 			if (message.reactions.exists(r=>r.emoji.name==="GM")) return;
 			if (message.reactions.exists(r=>r.emoji.name==="🔒")) return;
@@ -63,9 +63,6 @@ module.exports = class reports {
 				}
 			}
 		})
-	}
-	test(msg) {
-		msg.reply("YEET")
 	}
 	
 }
