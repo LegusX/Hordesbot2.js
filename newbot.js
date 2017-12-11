@@ -66,7 +66,7 @@ client.on("ready", ()=>{
     client.user.setGame(`Use ${bot.prefix}help!`)
 });
 
-client.on("message", (msg)=>{
+client.on("message", async msg => {
 	if (msg.channel.type === "dm" || msg.channel.type === "group" || msg.author.id === "243120137010413568") return;
 	if(msg.channel.id !== "240595502167490562" && msg.content[0] === bot.prefix) {
 		msg.author.send("Please don't use bot commands outside of #off-topic")
@@ -79,8 +79,9 @@ client.on("message", (msg)=>{
 	//Do not change the order of the above if statements, or it'll break the bot.
 	
     if(msg.content.startsWith(bot.prefix+"ping")) {
-    	cooloff(msg.author.id)
-        return msg.channel.send(new Date().getTime() - msg.createdTimestamp + " ms");
+		cooloff(msg.author.id)
+		const message = await msg.channel.send("x ms");
+		 return message.edit(message.createdTimestamp - msg.createdTimestamp + " ms");
     }
     
 	if (msg.content.startsWith(bot.prefix+"help")) {
