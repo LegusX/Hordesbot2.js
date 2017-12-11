@@ -10,14 +10,14 @@ const options = commandLineArgs(optionDefinitions)
 // console.log(options)
 if (typeof options.token === "undefined") return console.log("Please pass a token through the -token or -t argument")
 
-var bot = {
+global.bot = {
 	modules:{},
 	prefix:"$"
 }
 var moduleList = []
 var helpList = []
 var cooldown = []
-var cooldownTime = 15
+global.cooldownTime = 15
 
 fs.readdir("./modules/", (err, files) => {
     if(err) console.error(err);
@@ -64,6 +64,7 @@ client.on("ready", ()=>{
     bot.penaltytick = bot.hordes.emojis.find("name", "penaltytick");
     bot.reactionsWatch = [bot.redtick.id, bot.greentick.id, bot.penaltytick.id];
     client.user.setGame(`Use ${bot.prefix}help!`)
+    // client.guilds.find("id", "221772925282287627").channels.find("id", "240595502167490562").send("I am now online :D")
 });
 
 client.on("message", (msg)=>{
@@ -85,9 +86,9 @@ client.on("message", (msg)=>{
     
 	if (msg.content.startsWith(bot.prefix+"help")) {
 		if (msg.content.replace(bot.prefix+"help") === "" || !helpList.includes(msg.content.replace(bot.prefix+"help ", "").toLowerCase()+".js")) {
-			var sectionBlock = helpList[0].split("")[0].toUpperCase()+helpList[0].substr(1).replace(".js", "")
+			var sectionBlock = "▫"+helpList[0].split("")[0].toUpperCase()+helpList[0].substr(1).replace(".js", "")
 			for (var i=1;i<helpList.length;i++) {
-				sectionBlock+="\n"+helpList[i].split("")[0].toUpperCase()+helpList[i].substr(1).replace(".js", "")
+				sectionBlock+="\n▫"+helpList[i].split("")[0].toUpperCase()+helpList[i].substr(1).replace(".js", "")
 			}
 			var helpMessage = new Discord.RichEmbed()
 			.setTitle("**HordesBot Help**")
@@ -109,17 +110,10 @@ client.on("message", (msg)=>{
 		}
 	}
 	
-	if (msg.content.toLowerCase().startsWith(bot.prefix+"cooldown ") && msg.member.roles.exists("name", "Community Manager") || msg.member.roles.exists("name", "Developer")) {
-		console.log("cooler")
-		if(Number(msg.content.toLowerCase().substr(10)) === "NaN" || Number(msg.content.toLowerCase().substr(10)) === NaN) return msg.reply("Please specify a number of seconds.")
-		cooldownTime = Number(msg.content.toLowerCase().substr(10))
-		msg.reply("Command cooldown time set to `"+cooldownTime+"` seconds")
-		console.log('cool')
-	}
-	
 	if (msg.content[0] === bot.prefix && msg.channel.type !== "dm" && msg.channel.type !== "group" && msg.channel.id === "240595502167490562") {
 		var command = msg.content.split(" ")[0].replace(bot.prefix, "").toLowerCase()
 		for(var i=0;i<moduleList.length;i++) {
+			if(typeof bot.modules[moduleList[i]].commands === "undefined") return;
 			if(bot.modules[moduleList[i]].commands.includes(command)) {
 				cooloff(msg.author.id)
 				bot.modules[moduleList[i]][command](msg)

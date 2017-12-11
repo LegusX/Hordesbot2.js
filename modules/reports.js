@@ -31,7 +31,7 @@ function updateReports(member, good, message) {
 	}
 	return;
 }
-module.exports = class reports {
+module.exports = class Reports {
 	constructor(client,bot) {
 		this.client = client
 		this.bot = bot;
