@@ -24,6 +24,7 @@ module.exports = class Developer {
 				delete bot.modules[`./${message.content.toLowerCase().replace(bot.prefix+"reload ", "")}.js`]
 				var module = require(`./${message.content.toLowerCase().replace(bot.prefix+"reload ", "")}.js`)
 				bot.modules[message.content.toLowerCase().replace(bot.prefix+"reload ", "")+".js"] = new module(this.client, bot)
+				moduleList.splice(moduleList.indexOf(message.content.toLowerCase().replace(bot.prefix+"reload ", "")+".js"), 1)
 				console.log("Module: "+message.content.toLowerCase().replace(bot.prefix+"reload ", "")+" has been successfully reloaded.")
 				message.reply("Module: `"+message.content.toLowerCase().replace(bot.prefix+"reload ", "")+"` has been successfully reloaded.")
 			}
