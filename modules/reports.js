@@ -9,27 +9,31 @@ function writeJSON(location, data){
 }
 
 function userScore(id, pn) {
-	if(pn ==="+") {
-		return typeof readJSON("./data/reportdata.json")[id] === "undefined"?addUser(id,pn):readJSON("./data/reportdata.json")[id].positive
-	} else if(pn==="-") {
-		return typeof readJSON("./data/reportdata.json")[id] === "undefined"?addUser(id,pn):readJSON("./data/reportdata.json")[id].negative
-	}
-	else console.log("Must be + or -")
+	return typeof readJSON("./data/reportdata.json")[id] === "undefined"?addUser(id,pn):readJSON("./data/reportdata.json")[id][pn]
 }
 
 function updateReports(member, good, message) {
-	if (typeof readJSON("./data/reportdata.json")[member.user.id] === "undefined") addUser(member.user.id,good?"+":"-")
+	if (typeof readJSON("./data/reportdata.json")[member.user.id] === "undefined") addUser(member.user.id,good)
 	else {
 		var data = readJSON("./data/reportdata.json")
-		if (good) data[member.user.id].positive++
-		else if (!good) data[member.user.id].negative++
-		if (data[member.user.id].negative >= 3) message.channel.overwritePermissions(member.user, {"SEND_MESSAGES": false})
-		if (data[member.user.id].positive >= 3) {
-			if (!member.roles.array().includes("348316016742498305")) member.addRole("348316016742498305")
-		}
+		data[member.user.id].[good]++
+		if (data[member.user.id].penalty >= 3) message.channel.overwritePermissions(member.user, {"SEND_MESSAGES": false})
+		if (data[member.user.id].accepted >= 3 && !member.roles.array().includes("348316016742498305")) member.addRole("348316016742498305")}
 		writeJSON("./data/reportdata.json", data)
 	}
 	return;
+}
+
+function addUser(id, adp) {
+	//adp = accepted,denied,penalty
+	var data = readJSON("./data/reportdata.json")
+	data[id] = {
+		accepted: 0,
+		denied: 0,
+		penalty: 0
+	}
+	data[id][adp]++
+	writeJSON("./data/reportdata.json", data)
 }
 module.exports = class Reports {
 	constructor(client,bot) {
@@ -48,18 +52,18 @@ module.exports = class Reports {
 				case bot.reactionsWatch[0]: {
 					bot.hordes.channels.find("id", "388458554907951105").send("```Report Denied\nUsername: "+message.author.username+"\n\n"+message.content+"\n\nUser Score: +"+userScore(message.author.id,"+")+" -"+userScore(message.author.id,"-")+"```")
 					message.react("🔒")
+					updateReports(message.member, "denied", message)
 					break;
 				}
 				case bot.reactionsWatch[1]: {
-					updateReports(message.member, true, message)
+					updateReports(message.member, "accepted", message)
 					bot.hordes.channels.find("id", "388458477732888606").send("```Report Accepted\nUsername: "+message.author.username+"\n\n"+message.content+"\n\nUser Score: +"+userScore(message.author.id,"+")+" -"+userScore(message.author.id,"-")+"```")
 					message.react("🔒")
 					break;
 				}
 				case bot.reactionsWatch[2]: {
-					updateReports(message.member, false, message)
-					message.reply("idk what to do here. don't ask me.")
-					message.react("🔒")
+					updateReports(message.member, "penalty", message)
+					message.delete()
 				}
 			}
 		})
