@@ -14,8 +14,8 @@ global.bot = {
 	modules:{},
 	prefix:"$"
 }
-var moduleList = []
-var helpList = []
+global.moduleList = []
+global.helpList = []
 var cooldown = []
 global.cooldownTime = 15
 global.mods = ["227376221351182337", "190313064367652864", "117993898537779207", "126288853576318976", "184784933330354177", "126288853576318976", "298984060049686528"]

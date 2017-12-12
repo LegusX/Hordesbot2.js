@@ -1,5 +1,5 @@
 const Discord = require("discord.js")
-const git = require("simple-git")("../")
+const git = require("simple-git")("./")
 const fs = require("fs")
 
 const admins = ["227376221351182337", "190313064367652864", "117993898537779207", "126288853576318976"]
@@ -8,7 +8,7 @@ module.exports = class Developer {
 	constructor(client/*,bot*/) {
 		this.client = client
 		// this.bot = bot
-		this.commands = ["stop", "reload", "eval"]
+		this.commands = ["stop", "reload", "eval", "update"]
 	}
 	stop(message) {
 		if (admins.includes(message.author.id)) {
@@ -46,7 +46,7 @@ module.exports = class Developer {
 			var client = this.client
 			let result;
 			try {
-	    		let out = eval(args.join(' '));
+	    		let out = eval(args.join(' ')) || "";
 	    		var evalMBD = new Discord.RichEmbed()
 	    		  .setTitle('Input')
 	    		  .setColor("#00ff00")
@@ -72,28 +72,31 @@ module.exports = class Developer {
 	else return message.reply("You have to be a developer to use this command.")
 	}
 	update(message) {
-		git.fetch(function(){
+		var client = this.client;
+		git.pull(function(err, update){
+			if (err) console.log(err.toString());
+			if (!update) return console.log("no update");
 			console.log("Updating bot")
-			for(var i=0;i<Object.getOwnPropertyNames(bot.modules).length;i++) {
-				fs.readdir("./modules/", (err, files) => {
-				    if(err) console.error(err);
-				
-				    let jsfiles = files.filter(f => f.split(".").pop() === "js");
-				    if(jsfiles.length <= 0) {
-				        console.log("No modules to load!");
-				    }
-				
-				    console.log(`Loading ${jsfiles.length} modules!`);
-				
-				    jsfiles.forEach((f, i) => {
-				        let module = require(`./modules/${f}`);
-				        console.log(`${i + 1}: ${f} loaded!`);
-				        bot.modules[f] = new module(client, bot)
-				        moduleList.push(f)
-				        if (typeof bot.modules[f].help !== "undefined") helpList.push(f)
-				    });
+			// FIND WAY TO RESTART PROCESS HERE
+			moduleList.length = 0;
+			fs.readdir("./modules/", (err, files) => {
+				if(err) console.error(err);
+			
+				let jsfiles = files.filter(f => f.split(".").pop() === "js");
+				if(jsfiles.length <= 0) {
+					console.log("No modules to load!");
+				}
+			
+				console.log(`Loading ${jsfiles.length} modules!`);
+			
+				jsfiles.forEach((f, i) => {
+					let module = require(`./${f}`);
+					console.log(`${i + 1}: ${f} loaded!`);
+					bot.modules[f] = new module(client, bot)
+					moduleList.push(f)
+					if (typeof bot.modules[f].help !== "undefined") helpList.push(f)
 				});
-			}
+			});
 		})
 	}
 }
