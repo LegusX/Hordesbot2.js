@@ -38,6 +38,7 @@ module.exports = class Developer {
 		.addField("`"+bot.prefix+"stop`", "Shuts off the bot entirely, only use if you must.")
 		.addField("`"+bot.prefix+"reload <module>`", "Reloads the given module")
 		.addField("`"+bot.prefix+"eval <code to run>`", "Evals the given code")
+		.addField("`"+bot.prefix+"update`", "Updates HordesBot from the repo and restarts all modules")
 		return message
 	}
 	eval(message) {
@@ -86,10 +87,12 @@ module.exports = class Developer {
 				if(jsfiles.length <= 0) {
 					console.log("No modules to load!");
 				}
-			
+				
+				moduleList.length = []
 				console.log(`Loading ${jsfiles.length} modules!`);
 			
 				jsfiles.forEach((f, i) => {
+					delete require.cache[require.resolve(`./${f}`)];
 					let module = require(`./${f}`);
 					console.log(`${i + 1}: ${f} loaded!`);
 					bot.modules[f] = new module(client, bot)
