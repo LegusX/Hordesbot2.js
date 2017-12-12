@@ -50,14 +50,14 @@ module.exports = class Reports {
 			if (message.reactions.exists(r=>r.emoji.name==="🔒")) return;
 			switch (reaction.emoji.id) {
 				case bot.reactionsWatch[0]: {
-					bot.hordes.channels.find("id", "388458554907951105").send("```Report Denied\nUsername: "+message.author.username+"\n\n"+message.content+"\n\nUser Score: +"+userScore(message.author.id,"+")+" -"+userScore(message.author.id,"-")+"```")
+					bot.hordes.channels.find("id", "388458554907951105").send("```Report Denied\nUsername: "+message.author.username+"\n\n"+message.content+"\n\nUser Score: +"+userScore(message.author.id,"accepted")+" -"+userScore(message.author.id,"denied")+"```")
 					message.react("🔒")
 					updateReports(message.member, "denied", message)
 					break;
 				}
 				case bot.reactionsWatch[1]: {
 					updateReports(message.member, "accepted", message)
-					bot.hordes.channels.find("id", "388458477732888606").send("```Report Accepted\nUsername: "+message.author.username+"\n\n"+message.content+"\n\nUser Score: +"+userScore(message.author.id,"+")+" -"+userScore(message.author.id,"-")+"```")
+					bot.hordes.channels.find("id", "388458477732888606").send("```Report Accepted\nUsername: "+message.author.username+"\n\n"+message.content+"\n\nUser Score: +"+userScore(message.author.id,"accepted")+" -"+userScore(message.author.id,"denied")+"```")
 					message.react("🔒")
 					break;
 				}
