@@ -22,6 +22,6 @@ module.exports = class General {
 		return message
 	}
 	test(message) {
-		message.reply("PLS WORK")
+		message.reply("DOES THIS ACTUALLY WORK?")
 	}
 }
