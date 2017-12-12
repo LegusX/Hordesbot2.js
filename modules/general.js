@@ -22,6 +22,6 @@ module.exports = class General {
 		return message
 	}
 	test(message) {
-		message.reply("Donald Trump")
+		message.reply("Donald Trump2")
 	}
 }
