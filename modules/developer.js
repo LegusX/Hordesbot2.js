@@ -69,7 +69,6 @@ module.exports = class Developer {
 	    		message.delete();
 	    		return message.channel.send("```js\n" + e.toString() + "\n```", evalErr);
 			}
-			message.channel.send("```js\n" + result + "\n```");
 		}
 	else return message.reply("You have to be a developer to use this command.")
 	}
