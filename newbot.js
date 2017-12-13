@@ -72,7 +72,7 @@ client.on("ready", ()=>{
 client.on("message", async msg => {
 	const message = msg;
 	if (msg.channel.type === "dm" || msg.channel.type === "group" || msg.author.id === "243120137010413568") return;
-	if(msg.channel.id !== "240595502167490562" && msg.content[0] === bot.prefix && msg.channe.id !== "287042530825076736") {
+	if(msg.channel.id !== "240595502167490562" && msg.content[0] === bot.prefix && msg.channel.id !== "287042530825076736") {
 		msg.author.send("Please don't use bot commands outside of #off-topic")
 		return msg.delete()
 	}
