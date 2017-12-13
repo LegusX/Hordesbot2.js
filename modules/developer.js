@@ -42,14 +42,11 @@ module.exports = class Developer {
 		return message
 	}
 	eval(message) {
-		console.log("val");
 		if (admins.includes(message.author.id)) {
-			console.log("pass");
 			var args = message.content.replace(bot.prefix + "eval ", "").split(" ")
 			var client = this.client
 			let result;
 			try {
-				console.log("into try");
 				let out = eval(args.join(' ')) || "";
 				var evalMBD = new Discord.RichEmbed()
 					.setTitle('Input')
