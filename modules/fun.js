@@ -40,7 +40,7 @@ module.exports = class Fun {
 	}
 	ball(message) {
 		if (message.content.toLowerCase().replace(bot.prefix + "eight", "").split(" ").length < 2) message.reply("The 8ball can't answer a non-existant question")
-		message.channel.send(responses[getRandomInt(0, responses.length)])
+		message.channel.send("🎱 "+responses[getRandomInt(0, responses.length)])
 	}
 	die(msg) {
 		if (msg.member.displayName.includes("The Ghost of")) return msg.reply("You're already a ghost, you can't die again silly")
