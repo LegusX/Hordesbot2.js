@@ -1,6 +1,7 @@
 const Discord = require("discord.js")
 const git = require("simple-git")("./")
 const fs = require("fs")
+const chalk = require("chalk");
 
 const admins = ["227376221351182337", "190313064367652864", "117993898537779207", "126288853576318976"]
 
@@ -47,6 +48,7 @@ module.exports = class Developer {
 			var client = this.client
 			let result;
 			try {
+				console.log(chalk.yellow("Eval: " + (args.join(' ') || "")));
 				let out = eval(args.join(' ')) || "";
 				var evalMBD = new Discord.RichEmbed()
 					.setTitle('Input')
@@ -77,7 +79,7 @@ module.exports = class Developer {
 		git.pull(function (err, update) {
 			if (err) console.log(err.toString());
 			if (!update) return console.log("no update");
-			console.log("Updating bot")
+			console.log(chalk.yellow("Updating bot"));
 			// FIND WAY TO RESTART PROCESS HERE
 			moduleList.length = 0;
 			fs.readdir("./modules/", (err, files) => {
