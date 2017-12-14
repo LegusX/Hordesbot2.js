@@ -115,7 +115,7 @@ client.on("message", async msg => {
 		}
 	}
 
-	if (msg.content[0] === bot.prefix && msg.channel.type !== "dm" && msg.channel.type !== "group" && (msg.channel.id === "240595502167490562" || msg.channel.id === "287042530825076736")) {
+	if (msg.content[0] === bot.prefix && msg.channel.type !== "dm" && msg.channel.type !== "group" && (msg.channel.id === "390239096519393282" || msg.channel.id === "287042530825076736")) {
 		var command = msg.content.split(" ")[0].replace(bot.prefix, "").toLowerCase()
 		for (var i = 0; i < moduleList.length; i++) {
 			if (typeof bot.modules[moduleList[i]].commands === "undefined") return;
