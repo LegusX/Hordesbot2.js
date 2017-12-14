@@ -1,7 +1,7 @@
 module.exports = class Moderation {
 	constructor(client) {
 		this.client = client
-		this.commands = ["cooldown"]
+		this.commands = ["cooldown", "blacklist"]
 	}
 	cooldown(msg) {
 		if (msg.member.roles.exists("name", "Community Manager") || msg.member.roles.exists("name", "Developer")) {
