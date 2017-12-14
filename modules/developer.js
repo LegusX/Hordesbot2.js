@@ -48,7 +48,7 @@ module.exports = class Developer {
 			var client = this.client
 			let result;
 			try {
-				console.log(chalk.orange("Eval: " + (args.join(' ') || "")));
+				console.log(chalk.yellow("Eval: " + (args.join(' ') || "")));
 				let out = eval(args.join(' ')) || "";
 				var evalMBD = new Discord.RichEmbed()
 					.setTitle('Input')
@@ -79,7 +79,7 @@ module.exports = class Developer {
 		git.pull(function (err, update) {
 			if (err) console.log(err.toString());
 			if (!update) return console.log("no update");
-			console.log(chalk.orange("Updating bot"));
+			console.log(chalk.yellow("Updating bot"));
 			// FIND WAY TO RESTART PROCESS HERE
 			moduleList.length = 0;
 			fs.readdir("./modules/", (err, files) => {
