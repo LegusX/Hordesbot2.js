@@ -40,7 +40,7 @@ fs.readdir("./modules/", (err, files) => {
 		let module = require(`./modules/${f}`);
 		console.log(`${i + 1}: ${f} loaded!`);
 		bot.modules[f] = new module(client, bot)
-		moduleList.push(f)
+		if (!moduleList.includes(f)) moduleList.push(f)
 		if (typeof bot.modules[f].help !== "undefined") helpList.push(f)
 	});
 });

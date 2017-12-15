@@ -17,7 +17,11 @@ const randomQuestions = [
 	"What's more powerful, love or lust?",
 	"If thunder is the thing we hear, why is there a word called 'thunderbolt'?",
 	"What matters more to you, inner beauty or outer beauty?",
-	"Why do we have money? It's just paper and metal."
+	"Why do we have money? It's just paper and metal.",
+	"What makes a person perfect to you?",
+	"Would you rather be well known and have a lot of friends that may not be of great quality, or would you rather have a good group of friends?",
+	"What matters more, experience or an open mind?",
+	"If you could have 3 wishes, what would you do with them?"
 ]
 //^All submitted by the community
 
