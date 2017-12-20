@@ -2,6 +2,8 @@ const Discord = require("discord.js")
 const git = require("simple-git")("./")
 const fs = require("fs")
 const chalk = require("chalk");
+const app = require("http").createServer(()=>{});
+const io = require("socket.io")(app);
 
 const admins = ["227376221351182337", "190313064367652864", "117993898537779207", "126288853576318976"]
 
@@ -9,7 +11,39 @@ module.exports = class Developer {
 	constructor(client /*,bot*/ ) {
 		this.client = client
 		// this.bot = bot
-		this.commands = ["stop", "reload", "eval", "update"]
+		this.commands = ["stop", "reload", "update"]
+		this.server = io;
+		app.listen(3456);
+		this.auth = false;
+		this.server.users = [];
+		this.server.on("connection", socket => {
+			this.server.users.push({id:socket.id, auth: false});
+			console.log(chalk.yellow("New Connection to Eval Server."));
+			if (this.server.users.length > 1) {
+				console.log(chalk.red("Error: Socket has 2 connected users... Closing server."))
+				socket.broadcast.emit("deny", true);
+				this.server.close();
+			}
+			socket.on("auth", data => {
+				if (data && data === client.token) {
+					console.log(chalk.green("Connection Authorized."));
+					this.auth = true;
+					this.server.users[0].auth = true;
+					socket.emit("auth", true);
+				} else {
+					console.log(chalk.red("Connection Failed to Authorize."));
+					this.auth = false;
+					socket.emit("auth", false);
+				}
+			});
+			socket.on("eval", data => {
+				if (!this.auth || !this.server.users[0].id === socket.id || !this.server.users[0].auth) { socket.emit("deny", true); return; }
+				socket.emit("eval", this.mval(data));
+			});
+			socket.on("disconnect", () => {
+				this.server.users.shift();
+			});
+		});
 	}
 	stop(message) {
 		if (admins.includes(message.author.id)) {
@@ -17,10 +51,21 @@ module.exports = class Developer {
 			process.exit()
 		}
 	}
+	mval(input) {
+		console.log(chalk.yellow(input));
+		let out;
+		try {
+			out = eval(input);
+		} catch (e) {
+			out = e.toString();
+		}
+		return out;
+	}
 	reload(message) {
 		if (admins.includes(message.author.id)) {
 			try {
 				console.log("Attempting to reload module: " + message.content.toLowerCase().replace(bot.prefix + "reload ", ""))
+				if (message.content.toLowerCase().replace(bot.prefix+"reload ", "") === "developer") this.server.close();
 				delete require.cache[require.resolve(`./${message.content.toLowerCase().replace(bot.prefix+"reload ", "")}.js`)];
 				delete bot.modules[`./${message.content.toLowerCase().replace(bot.prefix+"reload ", "")}.js`]
 				var module = require(`./${message.content.toLowerCase().replace(bot.prefix+"reload ", "")}.js`)
@@ -76,6 +121,7 @@ module.exports = class Developer {
 	}
 	update(message) {
 		var client = this.client;
+		this.server.close();
 		git.pull(function (err, update) {
 			if (err) console.log(err.toString());
 			if (!update) return console.log("no update");
