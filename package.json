@@ -1,0 +1,19 @@
+{
+  "name": "hordesbot2",
+  "version": "1.0.0",
+  "description": "Second version of Hordesbot, but updated after a few months of activity.",
+  "main": "newbot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LegusX/Hordesbot2.js.git"
+  },
+  "author": "LegusX and BlazingFire007",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LegusX/Hordesbot2.js/issues"
+  },
+  "homepage": "https://github.com/LegusX/Hordesbot2.js#readme"
+}
