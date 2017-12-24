@@ -111,7 +111,7 @@ client.on("message", async msg => {
 			cooloff(msg.author.id)
 			return;
 		} else {
-			var name = msg.content.replace(bot.prefix + "help ", "").split("")[0].toUpperCase() + msg.content.replace(bot.prefix + "help ").substr(1)
+			var name = msg.content.replace(bot.prefix + "help ", "").split("")[0].toUpperCase() + msg.content.replace(bot.prefix + "help "+msg.content.replace(bot.prefix + "help ", "").split("")[0], "")
 			var helpMessage = new Discord.RichEmbed()
 				.setTitle("HordesBot " + name + " Help")
 				.setColor(getRandomColor())
