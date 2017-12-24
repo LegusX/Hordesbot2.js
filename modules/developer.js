@@ -52,6 +52,7 @@ module.exports = class Developer {
 		}
 	}
 	mval(input) {
+		if (!admins.includes(message.author.id)) return;
 		console.log(chalk.yellow(input));
 		let out;
 		try {

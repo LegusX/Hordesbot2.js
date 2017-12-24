@@ -76,7 +76,9 @@ const number = {
 }
 function format(text) {
 	if(!isNaN(text.split("")[0])) {
-		text.split("").splice(0, 1, number[text[0]]).join("")
+		text = text.split("")
+		text[0] = number[text[0]]
+		text = text.join("")
 	}
 	return text;
 }

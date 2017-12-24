@@ -40,7 +40,7 @@ module.exports = class Fun {
 	constructor(client, bot) {
 		this.client = client
 		this.bot = bot
-		this.commands = ["die", "revive", "tassels", "tree", "xkcd", "randomname", "nickreset", "ball"]
+		this.commands = ["die", "revive", "tassels", "tree", "xkcd", "randomname", "nickreset", "eightball"]
 	}
 	eightball(message) {
 		if (message.content.toLowerCase().replace(bot.prefix + "eight", "").split(" ").length < 2) message.reply("The 8ball can't answer a non-existant question")
