@@ -52,7 +52,6 @@ module.exports = class Developer {
 		}
 	}
 	mval(input) {
-		if (!admins.includes(message.author.id)) return;
 		console.log(chalk.yellow(input));
 		let out;
 		try {
@@ -121,6 +120,7 @@ module.exports = class Developer {
 		} else return message.reply("You have to be a developer to use this command.")
 	}
 	update(message) {
+		if (!admins.includes(message.author.id)) return;
 		var client = this.client;
 		this.server.close();
 		git.pull(function (err, update) {
