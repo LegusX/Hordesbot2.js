@@ -23,9 +23,6 @@ var cooldown = []
 global.cooldownTime = 15
 global.mods = ["227376221351182337", "190313064367652864", "117993898537779207", "126288853576318976", "184784933330354177", "126288853576318976", "298984060049686528"]
 
-var numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-var numbertext = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
-
 fs.readdir("./modules/", (err, files) => {
 	if (err) console.error(err);
 
@@ -63,6 +60,25 @@ function cooloff(id) {
 	setTimeout(function (id) {
 		cooldown.splice(cooldown.indexOf(id), 1)
 	}, 1000 * cooldownTime, id)
+}
+
+const number = {
+	"0": "zero",
+	"1": "one",
+	"2": "two",
+	"3": "three",
+	"4": "four",
+	"5": "five",
+	"6": "six",
+	"7": "seven",
+	"8": "eight",
+	"9": "nine"
+}
+function format(text) {
+	if(!isNaN(text.split("")[0])) {
+		text.split("").splice(0, 1, number[text[0]]).join("")
+	}
+	return text;
 }
 
 client.on("ready", () => {
@@ -122,12 +138,7 @@ client.on("message", async msg => {
 	}
 
 	if (msg.content[0] === bot.prefix && msg.channel.type !== "dm" && msg.channel.type !== "group" && (msg.channel.id === "390239096519393282" || msg.channel.id === "287042530825076736")) {
-		var command = msg.content.split(" ")[0].replace(bot.prefix, "").toLowerCase()
-		for (var i in command.split("")) {
-			if(numbers.includes(command.split("")[i])) {
-				command.replace(command.split("")[i], numbertext[numbers.indexOf(command.split("")[i])])
-			}
-		}
+		var command = format(msg.content.split(" ")[0].replace(bot.prefix, "").toLowerCase())
 		for (var i = 0; i < moduleList.length; i++) {
 			if (typeof bot.modules[moduleList[i]].commands === "undefined") return;
 			if (bot.modules[moduleList[i]].commands.includes(command)) {
