@@ -87,7 +87,7 @@ module.exports = class Fun {
 			var name = adj + " " + noun
 			message.reply(`The random name generated was: \`${name}\`\nWould you like to use this name? (yes/no)`)
 			var filter = msg => {
-				if (msg.author.id === message.author.id && msg.content.toLowerCase() === "yes" || msg.author.id === message.author.id && msg.content.toLowerCase() === "no") return true
+				if (msg.author.id === message.author.id && msg.content.toLowerCase().includes("yes") || msg.author.id === message.author.id && msg.content.toLowerCase().includes("n")) return true
 			}
 			message.channel.awaitMessages(filter, {
 					time: 20000,
@@ -97,7 +97,7 @@ module.exports = class Fun {
 					if (collected.first().content.toLowerCase().includes("yes") || collected.first().content.toLowerCase().startsWith("ye")) {
 						message.channel.send("Nickname changed to: `" + name + "`")
 						message.member.setNickname(name)
-					} else if (collected.first().content.toLowerCase().includes("no") || collected.first().content.toLowerCase().startsWith("n") message.reply("Canceled")
+					} else if (collected.first().content.toLowerCase().includes("no") || collected.first().content.toLowerCase().startsWith("n")) message.reply("Canceled")
 				})
 				.catch(err => {
 					message.reply("Canceled (due to taking longer than 20 seconds)")
