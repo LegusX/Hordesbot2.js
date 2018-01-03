@@ -142,11 +142,16 @@ module.exports = class Developer {
 
 				jsfiles.forEach((f, i) => {
 					delete require.cache[require.resolve(`./${f}`)];
-					let module = require(`./${f}`);
-					console.log(`${i + 1}: ${f} loaded!`);
-					bot.modules[f] = new module(client, bot)
-					moduleList.push(f)
-					if (typeof bot.modules[f].help !== "undefined") helpList.push(f)
+					try {
+						let module = require(`./${f}`);
+						console.log(`${i + 1}: ${f} loaded!`);
+						bot.modules[f] = new module(client, bot)
+						moduleList.push(f)
+						if (typeof bot.modules[f].help !== "undefined") helpList.push(f)
+					}
+					catch(e){
+						message.reply(`Module \`${f}\` failed to load`)
+					}
 				});
 			});
 		})
