@@ -150,7 +150,7 @@ module.exports = class Developer {
 						if (typeof bot.modules[f].help !== "undefined") helpList.push(f)
 					}
 					catch(e){
-						message.reply(`Module \`${f}\` failed to load`)
+						message.reply(`Module \`${f}\` failed to load with error:\n \`${e}\``)
 					}
 				});
 			});
