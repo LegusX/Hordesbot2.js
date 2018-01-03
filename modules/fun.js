@@ -90,17 +90,17 @@ module.exports = class Fun {
 				if (msg.author.id === message.author.id && msg.content.toLowerCase() === "yes" || msg.author.id === message.author.id && msg.content.toLowerCase() === "no") return true
 			}
 			message.channel.awaitMessages(filter, {
-					time: 15000,
+					time: 20000,
 					max: 1
 				})
 				.then(collected => {
-					if (collected.first().content.toLowerCase() === "yes") {
+					if (collected.first().content.toLowerCase().includes("yes") || collected.first().content.toLowerCase().startsWith("ye")) {
 						message.channel.send("Nickname changed to: `" + name + "`")
 						message.member.setNickname(name)
-					} else if (collected.first().content.toLowerCase() === "no") message.reply("Canceled")
+					} else if (collected.first().content.toLowerCase().includes("no") || collected.first().content.toLowerCase().startsWith("n") message.reply("Canceled")
 				})
 				.catch(err => {
-					message.reply("Canceled (due to taking longer than 15 seconds)")
+					message.reply("Canceled (due to taking longer than 20 seconds)")
 				})
 		} catch (e) {
 			console.log(e)
