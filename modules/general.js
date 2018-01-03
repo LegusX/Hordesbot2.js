@@ -21,7 +21,4 @@ module.exports = class General {
 			.addField("`" + bot.prefix + "info`", "Just some info about HordesBot")
 		return message
 	}
-	test(message) {
-		message.reply("DOES THIS ACTUALLY WORK?")
-	}
 }
