@@ -2,7 +2,7 @@ const Discord = require("discord.js")
 module.exports = class General {
 	constructor(client) {
 		this.client = client
-		this.commands = ["ping", "info", "test"]
+		this.commands = ["ping", "info", "test", "suggestcommand"]
 	}
 	ping(msg) {
 		return message.edit(message.createdTimestamp - msg.createdTimestamp + " ms");
@@ -19,6 +19,10 @@ module.exports = class General {
 	help(message) {
 		message.addField("`" + bot.prefix + "ping`", "Gets a rough estimate of the ping for HordesBot")
 			.addField("`" + bot.prefix + "info`", "Just some info about HordesBot")
+			.addField("`" + bot.prefix + "suggestcommand`", "Allows you to suggest a command for HordesBot!")
 		return message
+	}
+	suggestcommand(message){
+		this.client.servers.channels.get("398936399954313229").sendMessage(`${message.member.displayName} (${message.author.username})** suggested the following command:\n${message.content.replace(bot.prefix+"suggestcommand ", "")}`)
 	}
 }

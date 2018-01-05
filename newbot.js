@@ -35,7 +35,7 @@ fs.readdir("./modules/", (err, files) => {
 
 	jsfiles.forEach((f, i) => {
 		try {
-			let module = require(`./${f}`);
+			let module = require(`./modules/${f}`);
 			console.log(`${i + 1}: ${f} loaded!`);
 			bot.modules[f] = new module(client, bot)
 			moduleList.push(f)
