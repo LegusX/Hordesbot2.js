@@ -42,6 +42,7 @@ module.exports = class Reports {
 		this.client = client
 		this.bot = bot;
 		this.commands = []
+		client.guilds.get("221772925282287627").channels.find("name", "reports").fetchMessages({limit: 100});
 		client.on("messageReactionAdd", (reaction, user) => {
 			var message = reaction.message;
 			if (reaction.message.channel.id !== "382612925275308032") return;
