@@ -8,8 +8,9 @@ function writeJSON(location, data) {
 	fs.writeFileSync(location, JSON.stringify(data))
 }
 
-function userScore(id, type) {
-	return readJSON("./data/reportdata.json")[id][type]
+function userScore(id) {
+	let user = readJSON("./data/reportdata.json")[id];
+	return [user["accepted"], user["denied"]];
 }
 
 function updateReports(member, good, message) {
@@ -42,35 +43,53 @@ module.exports = class Reports {
 		this.bot = bot;
 		this.commands = []
 		client.on("messageReactionAdd", (reaction, user) => {
-			var message = reaction.message
+			var message = reaction.message;
 			if (reaction.message.channel.id !== "382612925275308032") return;
 			if (user.id === "240613206442246144") return;
-			if (!message.guild.members.find("id", user.id).roles.exists("id", "227720287083298816") /*CM role*/ && user.id !== "117993898537779207" /*Dek*/ && user.id !== "349377841416110081" /*dhwty*/ ) return;
+			if (!message.guild.member(user).roles.exists("id", "227720287083298816") /*CM role*/ && user.id !== "117993898537779207" /*Dek*/ && user.id !== "349377841416110081" /*dhwty*/ ) return;
 			if (!bot.reactionsWatch.includes(reaction.emoji.id)) return;
 			if (message.reactions.exists(r => r.emoji.name === "GM")) return;
 			if (message.reactions.exists(r => r.emoji.name === "🔒")) return;
 			switch (reaction.emoji.id) {
-			case bot.reactionsWatch[0]:
-				{
-					bot.hordes.channels.find("id", "388458554907951105").send("```Report Denied\nUsername: " + message.author.username + "\nUser Score: +" + userScore(message.author.id, "accepted") + " -" + userScore(message.author.id, "denied") + "```\n**Report:**\n"+message.content+"\n"+message.attachments.first().url+"\n--------------------------------------------------------------------------")
-					message.react("🔒")
-					updateReports(message.member, "denied", message)
+				case bot.reactionsWatch[0]:
+					updateReports(message.member, "denied", message);
+					var channel = client.channels.get("388458554907951105");
+					var pos, neg;
+					[pos, neg] = userScore(message.author.id);
+					var text = `Report Denied by ${user.username}\nUsername: ${message.author.username}\nUser score: +${pos} -${neg}`;
+					channel.send(text, {code: true, disableEveryone: true});
+					var report = `**Report:**\n${message.author}: ${message.content}`;
+					if (message.attachments.size > 0) {
+						report += "\nAttachments:\n";
+						message.attachments.forEach(attachment => {
+							report += attachment.url + "\n";
+						});
+					}
+					channel.send(report + "\n- - -");
+					message.react("🔒");
 					break;
-				}
-			case bot.reactionsWatch[1]:
-				{
-					updateReports(message.member, "accepted", message)
-					bot.hordes.channels.find("id", "388458477732888606").send("```Report Accepted\nUsername: " + message.author.username + "\nUser Score: +" + userScore(message.author.id, "accepted") + " -" + userScore(message.author.id, "denied") + "```\n**Report:**\n<@"+message.author.id+">: "+message.content+"\n"+message.attachments.first().url+"\n--------------------------------------------------------------------------")
-					message.react("🔒")
+				case bot.reactionsWatch[1]:
+					updateReports(message.member, "accepted", message);
+					var channel = client.channels.get("388458477732888606");
+					var pos, neg;
+					[pos, neg] = userScore(message.author.id);
+					var text = `Report Accepted by ${user.username}\nUsername: ${message.author.username}\nUser score: +${pos} -${neg}`;
+					channel.send(text, {code: true, disableEveryone: true});
+					var report = `**Report:**\n${message.author}: ${message.content}`;
+					if (message.attachments.size > 0) {
+						report += "\nAttachments:\n";
+						message.attachments.forEach(attachment => {
+							report += attachment.url + "\n";
+						});
+					}
+					channel.send(report + "\n- - -");
+					message.react("🔒");
 					break;
+				case bot.reactionsWatch[2]:
+					updateReports(message.member, "penalty", message);
+					message.delete();
 				}
-			case bot.reactionsWatch[2]:
-				{
-					updateReports(message.member, "penalty", message)
-					message.delete()
-				}
-			}
-		}
+		});
 	}
 
 }
