@@ -2,7 +2,7 @@ const Discord = require("discord.js")
 module.exports = class General {
 	constructor(client) {
 		this.client = client
-		this.commands = ["ping", "info", "test", "suggestcommand"]
+		this.commands = ["ping", "info", "suggestcommand"]
 	}
 	ping(msg) {
 		return message.edit(message.createdTimestamp - msg.createdTimestamp + " ms");
@@ -11,7 +11,7 @@ module.exports = class General {
 		var embed = new Discord.RichEmbed()
 			.setTitle("HordesBot Info")
 			.addField("Developers", "HordesBot is developed by LegusX and BlazingFire007")
-			.addField("When was this made?", "I've completely lost track, honestly.")
+			.addField("When was this made?", "A long time ago in a galaxy far, far away")
 			.addField("Why was this made?", "That is confidential information.")
 			.setThumbnail(this.client.user.avatarURL)
 		message.channel.send(embed)
@@ -23,6 +23,6 @@ module.exports = class General {
 		return message
 	}
 	suggestcommand(message){
-		this.client.servers.channels.get("398936399954313229").sendMessage(`${message.member.displayName} (${message.author.username})** suggested the following command:\n${message.content.replace(bot.prefix+"suggestcommand ", "")}`)
+		this.client.channels.get("398936399954313229").sendMessage(`${message.member.displayName} (${message.author.username})** suggested the following command:\n${message.content.replace(bot.prefix+"suggestcommand ", "")}`)
 	}
 }

@@ -1,5 +1,6 @@
 const snekfetch = require('snekfetch');
 const Discord = require("discord.js")
+const english = require("random-words").wordList
 const randomQuestions = [
 	"Would you rather feel like you have a sense of purpose in life, money, or happiness?",
 	"Why are things named as they are? Why is an apple an apple, why isn't it an orange?",
@@ -30,7 +31,6 @@ var nouns = ["comet", "Aijit Pai", "dino", "BlazingFire", "Skullhead", "Julia", 
 
 var responses = ["No", "Not today", "It is decidedly so", "Without a doubt", "Yes definitely", "You may rely on it", "As I see it yes", "Most likely", "Outlook good", null, "Signs point to yes", "Reply hazy try again", "Ask again later", "Better not tell you now", "Cannot predict now", "Concentrate and ask again", "Don't count on it", "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"]
 
-
 //Totally stolen from the MDN docs :D
 function getRandomInt(min, max) {
 	return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
@@ -40,7 +40,12 @@ module.exports = class Fun {
 	constructor(client, bot) {
 		this.client = client
 		this.bot = bot
-		this.commands = ["die", "revive", "tassels", "tree", "xkcd", "randomname", "nickreset", "eightball"]
+		this.commands = ["acronym", "die", "revive", "tassels", "tree", "xkcd", "randomname", "nickreset", "eightball", "avatar"]
+		this.words = {}
+		let letters = "abcdefghijklmnopqrstuvwxyz".split("")
+		for (var i=0;i<letters.length;i++) {
+			this.words[letters[i]] = english.filter(w => w.match(new RegExp("^"+letters[i]+"+")))
+		}
 	}
 	eightball(message) {
 		if (message.content.toLowerCase().replace(bot.prefix + "eight", "").split(" ").length < 2) message.reply("The 8ball can't answer a non-existant question")
@@ -78,6 +83,19 @@ module.exports = class Fun {
 			message.channel.send(send)
 		}).catch(console.error);
 	}
+	acronym(message) {
+		var request = message.content.toLowerCase().split(" ")[1].split("")
+		var acronym = this.words[request[0]][getRandomInt(0,this.words[request[0]].length-1)]
+		for (var i=1;i<request.length;i++) {
+			var list = this.words[request[i]]
+			acronym+=" "+list[getRandomInt(0,list.length-1)]
+		}
+		message.reply(`${request.join("")} may stand for \`${acronym}\``)
+	}
+	avatar(message) {
+		if (message.mentions.users.keyArray().length > 0) message.reply(message.mentions.users.first().avatarURL)
+		else message.reply(message.author.avatarURL)
+	}
 	randomname(message) {
 		try {
 			var adj = adjectives[getRandomInt(0, adjectives.length)]
@@ -107,14 +125,16 @@ module.exports = class Fun {
 		}
 	}
 	help(message) {
-		message.addField("`" + this.bot.prefix + "die`", "Kills you.")
-			.addField("`" + this.bot.prefix + "revive`", "Revives you.")
-			.addField("`" + this.bot.prefix + "tassels`", "Gives you a question that will either make you question your life or our sanity.")
-			.addField("`" + this.bot.prefix + "tree`", "Adds a nice little 🎄 next to your name! (Or takes it away)")
-			.addField("`" + this.bot.prefix + "xkcd`", "Gives you the most recent XKCD comic")
-			.addField("`" + this.bot.prefix + "randomname`", "Generates a random name using an adjective and a noun")
-			.addField("`" + this.bot.prefix + "nickreset`", "Resets your nickname")
-			.addField("`" + this.bot.prefix + "8ball <question>`", "Ask the amazing 8ball a question")
+		message.addField(this.bot.prefix + "die", "Kills you.")
+			.addField(this.bot.prefix + "revive", "Revives you.")
+			.addField(this.bot.prefix + "tassels", "Gives you a question that will either make you question your life or our sanity.")
+			.addField(this.bot.prefix + "tree", "Adds a nice little 🎄 next to your name! (Or takes it away)")
+			.addField(this.bot.prefix + "xkcd", "Gives you the most recent XKCD comic")
+			.addField(this.bot.prefix + "randomname", "Generates a random name using an adjective and a noun")
+			.addField(this.bot.prefix + "nickreset", "Resets your nickname")
+			.addField(this.bot.prefix + "8ball <question>", "Ask the amazing 8ball a question")
+			.addField(this.bot.prefix + "avatar <mention(optional)>", "Gives you your avatar URL, or that of the mentioned user.")
+			.addField(this.bot.prefix + "acronym <some letters>", "Generates a random list of words that could be the meaning of the given acronym.")
 		return message
 	}
 	nickreset(message) {

@@ -23,30 +23,6 @@ var cooldown = []
 global.cooldownTime = 15
 global.mods = ["227376221351182337", "190313064367652864", "117993898537779207", "126288853576318976", "184784933330354177", "126288853576318976", "298984060049686528"]
 
-fs.readdir("./modules/", (err, files) => {
-	if (err) console.error(err);
-
-	let jsfiles = files.filter(f => f.split(".").pop() === "js");
-	if (jsfiles.length <= 0) {
-		console.log("No modules to load!");
-	}
-
-	console.log(`Loading ${jsfiles.length} modules!`);
-
-	jsfiles.forEach((f, i) => {
-		try {
-			let module = require(`./modules/${f}`);
-			console.log(`${i + 1}: ${f} loaded!`);
-			bot.modules[f] = new module(client, bot)
-			moduleList.push(f)
-			if (typeof bot.modules[f].help !== "undefined") helpList.push(f)
-		}
-		catch(e){
-			console.log(`Module ${f} failed to load with error:\n ${e}`)
-		}
-	});
-});
-
 bot.blacklist = JSON.parse(fs.readFileSync("./data/blacklist.json"))
 
 //Pulled from: https://stackoverflow.com/questions/1484506/random-color-generator
@@ -98,6 +74,29 @@ client.on("ready", () => {
 	bot.reactionsWatch = [bot.redtick.id, bot.greentick.id, bot.penaltytick.id];
 	client.user.setGame(`Use ${bot.prefix}help!`)
 	// client.guilds.find("id", "221772925282287627").channels.find("id", "240595502167490562").send("I am now online :D")
+	fs.readdir("./modules/", (err, files) => {
+		if (err) console.error(err);
+	
+		let jsfiles = files.filter(f => f.split(".").pop() === "js");
+		if (jsfiles.length <= 0) {
+			console.log("No modules to load!");
+		}
+	
+		console.log(`Loading ${jsfiles.length} modules!`);
+	
+		jsfiles.forEach((f, i) => {
+			try {
+				let module = require(`./modules/${f}`);
+				console.log(`${i + 1}: ${f} loaded!`);
+				bot.modules[f] = new module(client, bot)
+				moduleList.push(f)
+				if (typeof bot.modules[f].help !== "undefined") helpList.push(f)
+			}
+			catch(e){
+				console.log(`Module ${f} failed to load with error:\n ${e}`)
+			}
+		});
+	});
 });
 
 client.on("message", async msg => {

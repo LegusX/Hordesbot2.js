@@ -37,7 +37,7 @@ module.exports = class Developer {
 				}
 			});
 			socket.on("eval", data => {
-				if (!this.auth || !this.server.users[0].id === socket.id || !this.server.users[0].auth) { socket.emit("deny", true); return; }
+				if (!this.auth || this.server.users[0].id !== socket.id || !this.server.users[0].auth) { socket.emit("deny", true); return; }
 				socket.emit("eval", this.mval(data));
 			});
 			socket.on("disconnect", () => {
@@ -46,10 +46,7 @@ module.exports = class Developer {
 		});
 	}
 	stop(message) {
-		if (admins.includes(message.author.id)) {
-			message.reply("👋")
-			process.exit()
-		}
+		if (admins.includes(message.author.id)) process.exit()
 	}
 	mval(input) {
 		console.log(chalk.yellow(input));
@@ -70,12 +67,12 @@ module.exports = class Developer {
 				delete bot.modules[`./${message.content.toLowerCase().replace(bot.prefix+"reload ", "")}.js`]
 				var module = require(`./${message.content.toLowerCase().replace(bot.prefix+"reload ", "")}.js`)
 				bot.modules[message.content.toLowerCase().replace(bot.prefix + "reload ", "") + ".js"] = new module(this.client, bot)
-				moduleList.splice(moduleList.indexOf(message.content.toLowerCase().replace(bot.prefix + "reload ", "") + ".js"), 1)
+				// moduleList.splice(moduleList.indexOf(message.content.toLowerCase().replace(bot.prefix + "reload ", "") + ".js"), 1)
 				console.log("Module: " + message.content.toLowerCase().replace(bot.prefix + "reload ", "") + " has been successfully reloaded.")
 				message.reply("Module: `" + message.content.toLowerCase().replace(bot.prefix + "reload ", "") + "` has been successfully reloaded.")
 			} catch (e) {
 				console.log("Error: " + e)
-				message.reply("Module: `" + message.content.toLowerCase().replace(bot.prefix + "reload ", "") + "` could not be found.")
+				message.reply("Module: `" + message.content.toLowerCase().replace(bot.prefix + "reload ", "") + "` could not be found or errored while being reloaded.\n`"+e+"`")
 			}
 		}
 	}
@@ -83,7 +80,6 @@ module.exports = class Developer {
 		message.setDescription("These commands can only be used by LegusX, BlazingFire007, Korvnisse, and Dek")
 			.addField("`" + bot.prefix + "stop`", "Shuts off the bot entirely, only use if you must.")
 			.addField("`" + bot.prefix + "reload <module>`", "Reloads the given module")
-			.addField("`" + bot.prefix + "eval <code to run>`", "Evals the given code")
 			.addField("`" + bot.prefix + "update`", "Updates HordesBot from the repo and restarts all modules")
 		return message
 	}
