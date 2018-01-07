@@ -65,15 +65,12 @@ function format(text) {
 }
 
 client.on("ready", () => {
-	console.log("ready");
-	// [messagelist, userdata] = rs(null, [], [], jsonfile);
 	bot.hordes = client.guilds.get("221772925282287627");
 	bot.redtick = bot.hordes.emojis.find("name", "redtick");
 	bot.greentick = bot.hordes.emojis.find("name", "greentick");
 	bot.penaltytick = bot.hordes.emojis.find("name", "penaltytick");
 	bot.reactionsWatch = [bot.redtick.id, bot.greentick.id, bot.penaltytick.id];
 	client.user.setGame(`Use ${bot.prefix}help!`)
-	// client.guilds.find("id", "221772925282287627").channels.find("id", "240595502167490562").send("I am now online :D")
 	fs.readdir("./modules/", (err, files) => {
 		if (err) console.error(err);
 	
@@ -97,6 +94,7 @@ client.on("ready", () => {
 			}
 		});
 	});
+	console.log(client.user.username+" is ready!")
 });
 
 client.on("message", async msg => {
@@ -129,6 +127,7 @@ client.on("message", async msg => {
 				.setDescription("Use `$help <section>` for more info about each section")
 				.addField("Sections", sectionBlock)
 				.setColor(getRandomColor())
+				.setThumbnail(client.user.avatarURL)
 			msg.channel.send(helpMessage)
 			cooloff(msg.author.id)
 			return;
@@ -137,7 +136,7 @@ client.on("message", async msg => {
 			var helpMessage = new Discord.RichEmbed()
 				.setTitle("HordesBot " + name + " Help")
 				.setColor(getRandomColor())
-
+				.setThumbnail(client.user.avatarURL)
 			cooloff(msg.author.id)
 			msg.channel.send(bot.modules[msg.content.replace(bot.prefix + "help ", "").toLowerCase() + ".js"].help(helpMessage))
 		}

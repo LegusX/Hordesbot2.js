@@ -39,7 +39,7 @@ module.exports = class Fun {
 	constructor(client, bot) {
 		this.client = client
 		this.bot = bot
-		this.commands = ["acronym", "die", "revive", "tassels", "letitsnow", "xkcd", "randomname", "nickreset", "eightball", "avatar"]
+		this.commands = ["acronym", "die", "revive", "tassels", "letitsnow", "randomname", "nickreset", "eightball", "avatar"]
 		this.words = {}
 		let letters = "abcdefghijklmnopqrstuvwxyz".split("")
 		for (var i=0;i<letters.length;i++) {
