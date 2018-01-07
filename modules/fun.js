@@ -1,4 +1,3 @@
-const snekfetch = require('snekfetch');
 const Discord = require("discord.js")
 const english = require("random-words").wordList
 const randomQuestions = [
@@ -40,7 +39,7 @@ module.exports = class Fun {
 	constructor(client, bot) {
 		this.client = client
 		this.bot = bot
-		this.commands = ["acronym", "die", "revive", "tassels", "tree", "xkcd", "randomname", "nickreset", "eightball", "avatar"]
+		this.commands = ["acronym", "die", "revive", "tassels", "letitsnow", "xkcd", "randomname", "nickreset", "eightball", "avatar"]
 		this.words = {}
 		let letters = "abcdefghijklmnopqrstuvwxyz".split("")
 		for (var i=0;i<letters.length;i++) {
@@ -68,23 +67,14 @@ module.exports = class Fun {
 	tassels(message) {
 		message.channel.send(randomQuestions[getRandomInt(0, randomQuestions.length)])
 	}
-	tree(message) {
-		if (message.member.displayName.includes("🎄")) message.member.setNickname(message.member.displayName.replace("🎄", ""))
-		else message.member.setNickname(message.member.displayName + "🎄")
-		message.reply("TREES FOR EVERYONE!")
-	}
-	xkcd(message) {
-		snekfetch.get("http://xkcd.com/info.0.json").then((r) => {
-			var result = JSON.parse(r.text)
-			var send = new Discord.RichEmbed()
-				.setImage(result.img)
-				.setDescription(result.alt)
-				.setTitle(result.title)
-			message.channel.send(send)
-		}).catch(console.error);
+	letitsnow(message) {
+		if (message.member.displayName.includes("❄")) message.member.setNickname(message.member.displayName.replace("❄", ""))
+		else message.member.setNickname(message.member.displayName + "❄")
+		message.reply("🎵Let it snow, let it snow, let it snow...🎵")
 	}
 	acronym(message) {
 		var request = message.content.toLowerCase().split(" ")[1].split("")
+		if (request.length>12) return message.reply("Acronym cannot be over 12 letters long")
 		var acronym = this.words[request[0]][getRandomInt(0,this.words[request[0]].length-1)]
 		for (var i=1;i<request.length;i++) {
 			var list = this.words[request[i]]
@@ -128,8 +118,7 @@ module.exports = class Fun {
 		message.addField(this.bot.prefix + "die", "Kills you.")
 			.addField(this.bot.prefix + "revive", "Revives you.")
 			.addField(this.bot.prefix + "tassels", "Gives you a question that will either make you question your life or our sanity.")
-			.addField(this.bot.prefix + "tree", "Adds a nice little 🎄 next to your name! (Or takes it away)")
-			.addField(this.bot.prefix + "xkcd", "Gives you the most recent XKCD comic")
+			.addField(this.bot.prefix + "letitsnow", "Adds a nice little ❄ next to your name! (Or takes it away)")
 			.addField(this.bot.prefix + "randomname", "Generates a random name using an adjective and a noun")
 			.addField(this.bot.prefix + "nickreset", "Resets your nickname")
 			.addField(this.bot.prefix + "8ball <question>", "Ask the amazing 8ball a question")
