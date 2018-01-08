@@ -23,6 +23,6 @@ module.exports = class General {
 		return message
 	}
 	suggestcommand(message){
-		this.client.channels.get("398936399954313229").sendMessage(`${message.member.displayName} (${message.author.username})** suggested the following command:\n${message.content.replace(bot.prefix+"suggestcommand ", "")}`)
+		this.client.channels.get("398936399954313229").sendMessage(`**${message.member.displayName} (${message.author.username}/${message.author.id})** suggested the following command:\n${message.content.replace(bot.prefix+"suggestcommand ", "")}`)
 	}
 }
