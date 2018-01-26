@@ -24,6 +24,7 @@ global.cooldownTime = 15
 global.mods = ["227376221351182337", "190313064367652864", "117993898537779207", "126288853576318976", "184784933330354177", "126288853576318976", "298984060049686528"]
 
 bot.blacklist = JSON.parse(fs.readFileSync("./data/blacklist.json"))
+botCommands = ["-play", "-queue", "!rank", "!levels", "-join", "-select", "-nowplaying", "-np"]
 
 //Pulled from: https://stackoverflow.com/questions/1484506/random-color-generator
 function getRandomColor() {
@@ -101,7 +102,7 @@ client.on("message", async msg => {
 	const message = msg;
 	if (bot.blacklist.includes(message.author.id)) return;
 	if (msg.channel.type === "dm" || msg.channel.type === "group" || msg.author.id === "243120137010413568") return;
-	if (msg.channel.id !== "390239096519393282" && msg.content[0] === bot.prefix && msg.channel.id !== "287042530825076736") {
+	if (msg.channel.id !== "390239096519393282" && (msg.content[0] === bot.prefix || botCommands.includes(msg.content.toLowerCase().split(" ")[0])) && msg.channel.id !== "287042530825076736") {
 		msg.author.send("Please don't use bot commands outside of #bot-commands")
 		return msg.delete()
 	}
