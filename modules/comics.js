@@ -1,6 +1,7 @@
 const Discord = require("discord.js")
 const dilbert = require("random-dilbert")
 const snekfetch = require('snekfetch');
+const garf = require("garfield");
 
 //Totally stolen from the MDN docs :D
 function getRandomInt(min, max) {
@@ -9,7 +10,7 @@ function getRandomInt(min, max) {
 
 module.exports = class Comics {
 	constructor(client) {
-		this.commands = ["dilbert", "xkcd"]; //Don't add the help command to this list.
+		this.commands = ["dilbert", "xkcd", "garfield"]; //Don't add the help command to this list.
 		this.client = client
 		snekfetch.get("http://xkcd.com/info.0.json").then((r) => {
 			var result = JSON.parse(r.text)
@@ -66,10 +67,16 @@ module.exports = class Comics {
 		message.channel.send("Please wait while I get the comic...").then(function(msg){
 			dilbert(function(err, data) {
 				var comic = new Discord.RichEmbed()
-				.setTitle("Random Dilbert")
+				.setTitle("Random Dilbert Comic")
 				.setImage(data.url)
 				msg.edit(comic)
 			})
 		})
+	}
+	garfield(message) {
+		var embed = new Discord.RichEmbed()
+		.setTitle("Random Garfield Comic")
+		.setImage(garf.random())
+		message.channel.send(embed)
 	}
 }

@@ -39,7 +39,7 @@ module.exports = class Fun {
 	constructor(client, bot) {
 		this.client = client
 		this.bot = bot
-		this.commands = ["acronym", "die", "revive", "tassels", "letitsnow", "randomname", "nickreset", "eightball", "avatar"]
+		this.commands = ["acronym", "die", "revive", "tassels", "letitsnow", "randomname", "nickreset", "resetnick", "eightball", "avatar"]
 		this.words = {}
 		let letters = "abcdefghijklmnopqrstuvwxyz".split("")
 		for (var i=0;i<letters.length;i++) {
@@ -127,6 +127,10 @@ module.exports = class Fun {
 		return message
 	}
 	nickreset(message) {
+		message.member.setNickname(message.author.username)
+		message.reply("Nickname reset to: " + message.author.username)
+	}
+	resetnick(message) {
 		message.member.setNickname(message.author.username)
 		message.reply("Nickname reset to: " + message.author.username)
 	}

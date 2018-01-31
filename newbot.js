@@ -64,6 +64,14 @@ function format(text) {
 	return text;
 }
 
+function readJSON(location) {
+	return JSON.parse(fs.readFileSync(location))
+}
+
+function writeJSON(location, data) {
+	fs.writeFileSync(location, JSON.stringify(data))
+}
+
 client.on("ready", () => {
 	bot.hordes = client.guilds.get("221772925282287627");
 	bot.redtick = bot.hordes.emojis.find("name", "redtick");
@@ -101,7 +109,7 @@ client.on("message", async msg => {
 	const message = msg;
 	if (bot.blacklist.includes(message.author.id)) return;
 	if (msg.channel.type === "dm" || msg.channel.type === "group" || msg.author.id === "243120137010413568") return;
-	if (msg.channel.id !== "390239096519393282" && msg.content[0] === bot.prefix && msg.channel.id !== "287042530825076736") {
+	if (msg.channel.id !== "390239096519393282" && (msg.content[0] === bot.prefix || msg.content.toLowerCase().startsWith("!rank")|| msg.content.toLowerCase().startsWith("!levels")) && msg.channel.id !== "287042530825076736") {
 		msg.author.send("Please don't use bot commands outside of #bot-commands")
 		return msg.delete()
 	}
@@ -114,6 +122,13 @@ client.on("message", async msg => {
 	if (msg.content.startsWith(bot.prefix + "ping")) {
 		cooloff(msg.author.id)
 		const message = await msg.channel.send("x ms");
+		if (message.createdTimestamp - msg.createdTimestamp > readJSON("./data/kingofping.json").ping) {
+			message.reply("Congratulations, you have accomplished the new highest ping! You are now the official **King of Ping**!")
+			writeJSON("./data/kingofping.json", {
+				username: msg.author.username,
+				ping: message.createdTimestamp - msg.createdTimestamp
+			})
+		}
 		return message.edit(message.createdTimestamp - msg.createdTimestamp + " ms");
 	}
 

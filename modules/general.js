@@ -1,8 +1,14 @@
 const Discord = require("discord.js")
+const fs = require("fs")
+
+function readJSON(location) {
+	return JSON.parse(fs.readFileSync(location))
+}
+
 module.exports = class General {
 	constructor(client) {
 		this.client = client
-		this.commands = ["ping", "info", "suggestcommand"]
+		this.commands = ["ping", "info", "suggestcommand", "kingofping"]
 	}
 	ping(msg) {
 		return message.edit(message.createdTimestamp - msg.createdTimestamp + " ms");
@@ -20,9 +26,14 @@ module.exports = class General {
 		message.addField("`" + bot.prefix + "ping`", "Gets a rough estimate of the ping for HordesBot")
 			.addField("`" + bot.prefix + "info`", "Just some info about HordesBot")
 			.addField("`" + bot.prefix + "suggestcommand`", "Allows you to suggest a command for HordesBot!")
+			.addField("`" + bot.prefix + "kingofping`", "Gives the highest ping of HordesBot, and the person who obtained it!")
 		return message
 	}
 	suggestcommand(message){
 		this.client.channels.get("398936399954313229").sendMessage(`**${message.member.displayName} (${message.author.username}/${message.author.id})** suggested the following command:\n${message.content.replace(bot.prefix+"suggestcommand ", "")}`)
+	}
+	kingofping(message) {
+		var data = readJSON("./data/kingofping.json")
+		message.reply(`The current King of Ping is **${data.username}** with a ping of **${data.ping}**`)
 	}
 }

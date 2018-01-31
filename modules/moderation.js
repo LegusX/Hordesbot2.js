@@ -13,6 +13,8 @@ module.exports = class Moderation {
 	}
 	help(message) {
 		message.addField("`" + bot.prefix + "cooldown <seconds>`", "Changes the command cooldown length")
+		.addField("`" + bot.prefix + "blacklist <mention>`", "Prevents the choosen person from using bot commands")
+		.addField("`" + bot.prefix + "whitelist <mention>`", "Allows the mentioned person to use bot commands again")
 		return message;
 	}
 	blacklist(message) {
@@ -28,5 +30,9 @@ module.exports = class Moderation {
 		bot.blacklist.splice(bot.blaclist.indexOf(message.mentions.first().id), 1)
 		fs.writeFileSync("./data/blacklist.json", JSON.stringify(bot.blacklist))
 		message.channel.send(`User: ${message.mentions.users.first()} has been succesfully whitelisted.`)
+	}
+	lock(message) {
+		var time = message.content.split(" ")[1].isNaN()?undefined:Number(message.content.split(" ")[1])
+		if(!time) return message.reply("Please specify a number of minutes to lock this channel for!")
 	}
 }
