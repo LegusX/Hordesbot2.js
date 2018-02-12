@@ -23,6 +23,19 @@ function updateReports(member, good, message) {
 		})
 		if (data[member.user.id].accepted >= 3 && !member.roles.array().includes("348316016742498305")) member.addRole("348316016742498305")
 		writeJSON("./data/reportdata.json", data)
+		if (data[member.user.id].accepted >= 100 && !member.roles.array().includes("408098180773969920")) {
+			var ids = Object.getOwnPropertyNames(data)
+			var score = data[member.user.id].accepted++
+			for(var i=0;i<ids.length;i++) {
+				if (data[ids[i] > score]) return;
+			}
+			if(!member.roles.array().includes("408098180773969920")) {
+				message.guild.roles.get("408098180773969920").members.array().forEach((member)=>{
+					member.removeRole("408098180773969920")
+				})
+				member.addRole("408098180773969920");
+			}
+		}
 	}
 }
 
@@ -37,12 +50,14 @@ function addUser(id, adp) {
 	data[id][adp]++
 		writeJSON("./data/reportdata.json", data)
 }
+
 module.exports = class Reports {
 	constructor(client, bot) {
+		reportcount++
+		if (reportcount > 1) process.exit()
 		this.client = client
 		this.bot = bot;
 		this.commands = []
-		client.channels.find("id", "382612925275308032").fetchMessages({limit: 100});
 		client.on("messageReactionAdd", (reaction, user) => {
 			var message = reaction.message;
 			if (reaction.message.channel.id !== "382612925275308032") return;

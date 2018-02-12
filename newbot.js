@@ -22,8 +22,10 @@ global.helpList = []
 var cooldown = []
 global.cooldownTime = 15
 global.mods = ["227376221351182337", "190313064367652864", "117993898537779207", "126288853576318976", "184784933330354177", "126288853576318976", "298984060049686528"]
+global.reportcount = 0
 
 bot.blacklist = JSON.parse(fs.readFileSync("./data/blacklist.json"))
+botCommands = ["-play", "-queue", "!rank", "!levels", "-join", "-select", "-nowplaying", "-np"]
 
 //Pulled from: https://stackoverflow.com/questions/1484506/random-color-generator
 function getRandomColor() {
@@ -72,36 +74,38 @@ function writeJSON(location, data) {
 	fs.writeFileSync(location, JSON.stringify(data))
 }
 
+fs.readdir("./modules/", (err, files) => {
+	if (err) console.error(err);
+
+	let jsfiles = files.filter(f => f.split(".").pop() === "js");
+	if (jsfiles.length <= 0) {
+		console.log("No modules to load!");
+	}
+
+	console.log(`Loading ${jsfiles.length} modules!`);
+
+	jsfiles.forEach((f, i) => {
+		try {
+			let module = require(`./modules/${f}`);
+			console.log(`${i + 1}: ${f} loaded!`);
+			bot.modules[f] = new module(client, bot)
+			moduleList.push(f)
+			if (typeof bot.modules[f].help !== "undefined") helpList.push(f)
+		}
+		catch(e){
+			console.log(`Module ${f} failed to load with error:\n ${e}`)
+		}
+	});
+});
+	
 client.on("ready", () => {
 	bot.hordes = client.guilds.get("221772925282287627");
 	bot.redtick = bot.hordes.emojis.find("name", "redtick");
 	bot.greentick = bot.hordes.emojis.find("name", "greentick");
 	bot.penaltytick = bot.hordes.emojis.find("name", "penaltytick");
 	bot.reactionsWatch = [bot.redtick.id, bot.greentick.id, bot.penaltytick.id];
+	client.channels.find("id", "382612925275308032").fetchMessages({limit: 100});
 	client.user.setGame(`Use ${bot.prefix}help!`)
-	fs.readdir("./modules/", (err, files) => {
-		if (err) console.error(err);
-	
-		let jsfiles = files.filter(f => f.split(".").pop() === "js");
-		if (jsfiles.length <= 0) {
-			console.log("No modules to load!");
-		}
-	
-		console.log(`Loading ${jsfiles.length} modules!`);
-	
-		jsfiles.forEach((f, i) => {
-			try {
-				let module = require(`./modules/${f}`);
-				console.log(`${i + 1}: ${f} loaded!`);
-				bot.modules[f] = new module(client, bot)
-				moduleList.push(f)
-				if (typeof bot.modules[f].help !== "undefined") helpList.push(f)
-			}
-			catch(e){
-				console.log(`Module ${f} failed to load with error:\n ${e}`)
-			}
-		});
-	});
 	console.log(client.user.username+" is ready!")
 });
 
@@ -110,6 +114,7 @@ client.on("message", async msg => {
 	if (bot.blacklist.includes(message.author.id)) return;
 	if (msg.channel.type === "dm" || msg.channel.type === "group" || msg.author.id === "243120137010413568") return;
 	if (msg.channel.id !== "390239096519393282" && (msg.content[0] === bot.prefix || msg.content.toLowerCase().startsWith("!rank")|| msg.content.toLowerCase().startsWith("!levels")) && msg.channel.id !== "287042530825076736") {
+	// if (msg.channel.id !== "390239096519393282" && (msg.content[0] === bot.prefix || botCommands.includes(msg.content.toLowerCase().split(" ")[0])) && msg.channel.id !== "287042530825076736") {
 		msg.author.send("Please don't use bot commands outside of #bot-commands")
 		return msg.delete()
 	}

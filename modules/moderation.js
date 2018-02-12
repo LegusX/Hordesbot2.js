@@ -18,6 +18,7 @@ module.exports = class Moderation {
 		return message;
 	}
 	blacklist(message) {
+		if(!message.member.roles.exists("name", "Community Manager") && !message.member.roles.exists("name", "Developer")) return;
 		if(message.mentions.users.keyArray().length < 1) return message.reply("Please @mention the user you would like to blacklist")
 		if(bot.blacklist.includes(message.mentions.users.first().id)) return message.reply("That user has already been blacklisted. To un-blacklist them, please use the `whitelist` command")
 		bot.blacklist.push(message.mentions.users.first().id)
@@ -25,9 +26,10 @@ module.exports = class Moderation {
 		message.channel.send(`User: ${message.mentions.users.first()} has been succesfully blacklisted.`)
 	}
 	whitelist(message) {
+		if(!message.member.roles.exists("name", "Community Manager") && !message.member.roles.exists("name", "Developer")) return;
 		if(message.mentions.users.keyArray().length < 1) return message.reply("Please @mention the user you would like to whitelist")
 		if(!bot.blacklist.includes(message.mentions.users.first().id)) return message.reply("That user is not blacklisted. To blacklist them, please use the `blacklist` command")
-		bot.blacklist.splice(bot.blaclist.indexOf(message.mentions.first().id), 1)
+		bot.blacklist.splice(bot.blacklist.indexOf(message.mentions.users.first().id), 1)
 		fs.writeFileSync("./data/blacklist.json", JSON.stringify(bot.blacklist))
 		message.channel.send(`User: ${message.mentions.users.first()} has been succesfully whitelisted.`)
 	}
