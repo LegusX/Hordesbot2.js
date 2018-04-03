@@ -39,12 +39,15 @@ module.exports = class Fun {
 	constructor(client, bot) {
 		this.client = client
 		this.bot = bot
-		this.commands = ["acronym", "die", "revive", "tassels", "letitsnow", "randomname", "nickreset", "resetnick", "eightball", "avatar"]
+		this.commands = ["acronym", "die", "revive", "tassels", "flowerme", "randomname", "nickreset", "resetnick", "eightball", "avatar"]
 		this.words = {}
 		let letters = "abcdefghijklmnopqrstuvwxyz".split("")
 		for (var i=0;i<letters.length;i++) {
 			this.words[letters[i]] = english.filter(w => w.match(new RegExp("^"+letters[i]+"+")))
 		}
+		client.on("message", (message)=>{
+			if (message.channel.id === "271941515071324161") return message.react("419501479305412608")
+		})
 	}
 	eightball(message) {
 		if (message.content.toLowerCase().replace(bot.prefix + "eight", "").split(" ").length < 2) message.reply("The 8ball can't answer a non-existant question")
@@ -67,10 +70,10 @@ module.exports = class Fun {
 	tassels(message) {
 		message.channel.send(randomQuestions[getRandomInt(0, randomQuestions.length)])
 	}
-	letitsnow(message) {
-		if (message.member.displayName.includes("❄")) message.member.setNickname(message.member.displayName.replace("❄", ""))
-		else message.member.setNickname(message.member.displayName + "❄")
-		message.reply("🎵Let it snow, let it snow, let it snow...🎵")
+	flowerme(message) {
+		if (message.member.displayName.includes("🌼")) message.member.setNickname(message.member.displayName.replace("🌼", ""))
+		else message.member.setNickname(message.member.displayName + "🌼")
+		message.reply("🌼**FLOWER POWER**🌼")
 	}
 	acronym(message) {
 		var request = message.content.toLowerCase().split(" ")[1].split("")
@@ -118,7 +121,7 @@ module.exports = class Fun {
 		message.addField(this.bot.prefix + "die", "Kills you.")
 			.addField(this.bot.prefix + "revive", "Revives you.")
 			.addField(this.bot.prefix + "tassels", "Gives you a question that will either make you question your life or our sanity.")
-			.addField(this.bot.prefix + "letitsnow", "Adds a nice little ❄ next to your name! (Or takes it away)")
+			.addField(this.bot.prefix + "flowerme", "Adds a nice little 🌼 next to your name! (Or takes it away)")
 			.addField(this.bot.prefix + "randomname", "Generates a random name using an adjective and a noun")
 			.addField(this.bot.prefix + "nickreset", "Resets your nickname")
 			.addField(this.bot.prefix + "8ball <question>", "Ask the amazing 8ball a question")

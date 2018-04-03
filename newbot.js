@@ -113,7 +113,7 @@ client.on("message", async msg => {
 	const message = msg;
 	if (bot.blacklist.includes(message.author.id)) return;
 	if (msg.channel.type === "dm" || msg.channel.type === "group" || msg.author.id === "243120137010413568") return;
-	if (msg.channel.id !== "390239096519393282" && (msg.content[0] === bot.prefix || msg.content.toLowerCase().startsWith("!rank")|| msg.content.toLowerCase().startsWith("!levels")) && msg.channel.id !== "287042530825076736") {
+	if (msg.channel.id !== "390239096519393282" && (msg.content[0] === bot.prefix || msg.content.toLowerCase().startsWith("!rank")|| msg.content.toLowerCase().startsWith("!levels")) && msg.channel.id !== "287042530825076736" && (!message.member.roles.exists("name", "Community Manager") && !message.member.roles.exists("name", "Developer"))) {
 	// if (msg.channel.id !== "390239096519393282" && (msg.content[0] === bot.prefix || botCommands.includes(msg.content.toLowerCase().split(" ")[0])) && msg.channel.id !== "287042530825076736") {
 		msg.author.send("Please don't use bot commands outside of #bot-commands")
 		return msg.delete()
@@ -163,7 +163,7 @@ client.on("message", async msg => {
 		}
 	}
 
-	if (msg.content[0] === bot.prefix && msg.channel.type !== "dm" && msg.channel.type !== "group" && (msg.channel.id === "390239096519393282" || msg.channel.id === "287042530825076736")) {
+	if (msg.content[0] === bot.prefix && msg.channel.type !== "dm" && msg.channel.type !== "group" /*&& (msg.channel.id === "390239096519393282" || msg.channel.id === "287042530825076736")*/) {
 		var command = format(msg.content.split(" ")[0].replace(bot.prefix, "").toLowerCase())
 		for (var i = 0; i < moduleList.length; i++) {
 			if (typeof bot.modules[moduleList[i]].commands === "undefined") return;
@@ -173,6 +173,10 @@ client.on("message", async msg => {
 			}
 		}
 	}
+})
+
+client.on("error", (e)=>{
+	client.guilds.get("243099652315021312").channels.get("428315330134409216").send(e)
 })
 
 client.login(options.token);

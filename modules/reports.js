@@ -21,22 +21,11 @@ function updateReports(member, good, message) {
 		if (data[member.user.id].penalty >= 3) message.channel.overwritePermissions(member.user, {
 			"SEND_MESSAGES": false
 		})
-		if (data[member.user.id].accepted >= 3 && !member.roles.array().includes("348316016742498305")) member.addRole("348316016742498305")
+		if (data[member.user.id].accepted >= 10 && !member.roles.array().includes("348316016742498305")) member.addRole("348316016742498305")
+		if (data[member.user.id].accepted >= 200 && !member.roles.has("408098180773969920")) member.addRole("408098180773969920");
 		writeJSON("./data/reportdata.json", data)
-		if (data[member.user.id].accepted >= 100 && !member.roles.array().includes("408098180773969920")) {
-			var ids = Object.getOwnPropertyNames(data)
-			var score = data[member.user.id].accepted++
-			for(var i=0;i<ids.length;i++) {
-				if (data[ids[i] > score]) return;
-			}
-			if(!member.roles.array().includes("408098180773969920")) {
-				message.guild.roles.get("408098180773969920").members.array().forEach((member)=>{
-					member.removeRole("408098180773969920")
-				})
-				member.addRole("408098180773969920");
-			}
-		}
 	}
+	return;
 }
 
 function addUser(id, adp) {
@@ -57,7 +46,7 @@ module.exports = class Reports {
 		if (reportcount > 1) process.exit()
 		this.client = client
 		this.bot = bot;
-		this.commands = []
+		this.commands = ["clearguardian"]
 		client.on("messageReactionAdd", (reaction, user) => {
 			var message = reaction.message;
 			if (reaction.message.channel.id !== "382612925275308032") return;
@@ -107,5 +96,16 @@ module.exports = class Reports {
 				}
 		});
 	}
-
+	clearguardian(message) {
+		if (!message.member.roles.exists("name", "Community Manager")) return;
+		let data = readJSON("./data/reportdata.json")
+		let ids = Object.getOwnPropertyNames(data)
+		for (var i=0;i<ids.length;i++) {
+			let user = data[ids[i]]
+			if (user.accepted < 10) {
+				if (message.guild.members.get(ids[i]).roles.has("348316016742498305"))message.guild.members.get(ids[i]).removeRole("348316016742498305")
+			}
+		}
+		message.reply("Success")
+	}
 }

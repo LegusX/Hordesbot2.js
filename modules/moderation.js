@@ -2,7 +2,7 @@ const fs = require("fs")
 module.exports = class Moderation {
 	constructor(client) {
 		this.client = client
-		this.commands = ["cooldown", "blacklist", "whitelist"]
+		this.commands = ["cooldown", "blacklist", "whitelist", "lock", "clear"]
 	}
 	cooldown(msg) {
 		if (msg.member.roles.exists("name", "Community Manager") || msg.member.roles.exists("name", "Developer")) {
@@ -34,7 +34,32 @@ module.exports = class Moderation {
 		message.channel.send(`User: ${message.mentions.users.first()} has been succesfully whitelisted.`)
 	}
 	lock(message) {
-		var time = message.content.split(" ")[1].isNaN()?undefined:Number(message.content.split(" ")[1])
+		if(!message.member.roles.exists("name", "Community Manager") && !message.member.roles.exists("name", "Developer")) return;
+		let time = isNaN(message.content.split(" ")[1])?undefined:Number(message.content.split(" ")[1])
 		if(!time) return message.reply("Please specify a number of minutes to lock this channel for!")
+		message.channel.overwritePermissions(message.guild.id, {
+			SEND_MESSAGES:false
+		}, "Channel locked by "+message.author.id)
+		message.channel.overwritePermissions(message.member.highestRole, {
+			SEND_MESSAGES:true
+		})
+		message.reply("Channel locked for "+time+" minutes!")
+		setTimeout(function(){
+			message.channel.overwritePermissions(message.guild.id, {
+				SEND_MESSAGES:true
+			})
+		}, time*60000)
+	}
+	clear(message) {
+		if(!message.member.roles.exists("name", "Community Manager") && !message.member.roles.exists("name", "Developer")) return;
+		let num = isNaN(message.content.split(" ")[1])?undefined:Number(message.content.split(" ")[1])
+		if(!num) return message.reply("Please specify a number of messages to delete!")
+		message.channel.bulkDelete(num)
+		.then(function(messages){
+			message.channel.send("Deleted "+messages.size+" messages!")
+			.then((msg)=>{setTimeout(function(msg){msg.delete()}, 4000, msg)});
+		})
+		.catch((e)=>{this.client.guilds.get("243099652315021312").channels.get("428315330134409216").send(e)})
+		message.delete()
 	}
 }

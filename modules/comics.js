@@ -22,6 +22,7 @@ module.exports = class Comics {
 		message.setTitle("Comics Help")
 		.addField(bot.prefix + "xkcd <option>", "options:\n-random: gives a random comic\n-[a number]: gives that comic\n-new: gives the newest comic")
 		.addField(bot.prefix + "dilbert", "Gives you a random Dilbert comic")
+		.addField(bot.prefix+"garfield", "Gives you a random Garfield comic")
 		return message
 	}
 	xkcd(message) {
