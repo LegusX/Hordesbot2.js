@@ -94,6 +94,7 @@ module.exports = class Fun {
 			var adj = adjectives[getRandomInt(0, adjectives.length)]
 			var noun = nouns[getRandomInt(0, nouns.length)]
 			adj = adj.split("")[0].toUpperCase() + adj.substr(1)
+			if (getRandomInt(0, 4) === 0) adj +=" "+adjectives[getRandomInt(0, adjectives.length)]
 			noun = noun.split("")[0].toUpperCase() + noun.substr(1)
 			var name = adj + " " + noun
 			message.reply(`The random name generated was: \`${name}\`\nWould you like to use this name? (yes/no)`)
