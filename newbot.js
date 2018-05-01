@@ -37,12 +37,12 @@ function getRandomColor() {
 	return color;
 }
 
-function cooloff(id) {
+function cooloff(id, roles) {
 	if (mods.includes(id)) return;
 	cooldown.push(id)
 	setTimeout(function (id) {
 		cooldown.splice(cooldown.indexOf(id), 1)
-	}, 1000 * cooldownTime, id)
+	}, 1000 * cooldownTime * 1-(0.05*roles), id)
 }
 
 const number = {
@@ -125,7 +125,7 @@ client.on("message", async msg => {
 	//Do not change the order of the above if statements, or it'll break the bot.
 
 	if (msg.content.startsWith(bot.prefix + "ping")) {
-		cooloff(msg.author.id)
+		cooloff(msg.author.id, message.member.roles.keyArray().length)
 		const message = await msg.channel.send("x ms");
 		if (message.createdTimestamp - msg.createdTimestamp > readJSON("./data/kingofping.json").ping) {
 			message.reply("Congratulations, you have accomplished the new highest ping! You are now the official **King of Ping**!")
@@ -150,7 +150,7 @@ client.on("message", async msg => {
 				.setColor(getRandomColor())
 				.setThumbnail(client.user.avatarURL)
 			msg.channel.send(helpMessage)
-			cooloff(msg.author.id)
+			cooloff(msg.author.id, message.member.roles.keyArray().length)
 			return;
 		} else {
 			var name = msg.content.replace(bot.prefix + "help ", "").split("")[0].toUpperCase() + msg.content.replace(bot.prefix + "help "+msg.content.replace(bot.prefix + "help ", "").split("")[0], "")
@@ -158,7 +158,7 @@ client.on("message", async msg => {
 				.setTitle("HordesBot " + name + " Help")
 				.setColor(getRandomColor())
 				.setThumbnail(client.user.avatarURL)
-			cooloff(msg.author.id)
+			cooloff(msg.author.id, message.member.roles.keyArray().length)
 			msg.channel.send(bot.modules[msg.content.replace(bot.prefix + "help ", "").toLowerCase() + ".js"].help(helpMessage))
 		}
 	}
@@ -168,7 +168,7 @@ client.on("message", async msg => {
 		for (var i = 0; i < moduleList.length; i++) {
 			if (typeof bot.modules[moduleList[i]].commands === "undefined") return;
 			if (bot.modules[moduleList[i]].commands.includes(command)) {
-				cooloff(msg.author.id)
+				cooloff(msg.author.id, message.member.roles.keyArray().length)
 				bot.modules[moduleList[i]][command](msg)
 			}
 		}
