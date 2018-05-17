@@ -10,9 +10,6 @@ module.exports = class General {
 		this.client = client
 		this.commands = ["ping", "info", "suggestcommand", "kingofping"]
 	}
-	ping(msg) {
-		return message.edit(message.createdTimestamp - msg.createdTimestamp + " ms");
-	}
 	info(message) {
 		var embed = new Discord.RichEmbed()
 			.setTitle("HordesBot Info")
