@@ -110,6 +110,7 @@ client.on("ready", () => {
 });
 
 client.on("message", message => {
+	try {
 	if (bot.blacklist.includes(message.author.id)) return;
 	if (message.channel.type === "dm" || message.channel.type === "group" || message.author.id === "243120137010413568") return;
 	if (message.channel.id !== "390239096519393282" && (message.content[0] === bot.prefix || message.content.toLowerCase().startsWith("!rank")|| message.content.toLowerCase().startsWith("!levels")) && message.channel.id !== "287042530825076736" && (!message.member.roles.exists("name", "Community Manager") && !message.member.roles.exists("name", "Developer"))) {
@@ -159,20 +160,21 @@ client.on("message", message => {
 			}
 		}
 	}
+}catch(e){console.log(e)}
 })
 
-client.on("message", async message=>{
-	if (message.content.startsWith(bot.prefix + "ping")) {
-		cooloff(message.author.id, message.member.roles.keyArray().length)
-		const message = await message.channel.send("x ms");
-		if (message.createdTimestamp - message.createdTimestamp > readJSON("./data/kingofping.json").ping) {
+client.on("message", async msg=>{
+	if (msg.content.startsWith(bot.prefix + "ping")) {
+		cooloff(msg.author.id, msg.member.roles.keyArray().length)
+		const message = await msg.channel.send("x ms");
+		if (message.createdTimestamp - msg.createdTimestamp > readJSON("./data/kingofping.json").ping) {
 			message.reply("Congratulations, you have accomplished the new highest ping! You are now the official **King of Ping**!")
 			writeJSON("./data/kingofping.json", {
-				username: message.author.username,
-				ping: message.createdTimestamp - message.createdTimestamp
+				username: msg.author.username,
+				ping: msg.createdTimestamp - msg.createdTimestamp
 			})
 		}
-		return message.edit(message.createdTimestamp - message.createdTimestamp + " ms");
+		return message.edit(message.createdTimestamp - msg.createdTimestamp + " ms");
 	}
 })
 
