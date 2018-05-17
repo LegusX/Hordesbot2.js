@@ -8,7 +8,7 @@ function readJSON(location) {
 module.exports = class General {
 	constructor(client) {
 		this.client = client
-		this.commands = ["ping", "info", "suggestcommand", "kingofping"]
+		this.commands = ["info", "suggestcommand", "kingofping"]
 	}
 	info(message) {
 		var embed = new Discord.RichEmbed()
