@@ -109,8 +109,7 @@ client.on("ready", () => {
 	console.log(client.user.username+" is ready!")
 });
 
-client.on("message", async message => {
-	const message = message;
+client.on("message", message => {
 	if (bot.blacklist.includes(message.author.id)) return;
 	if (message.channel.type === "dm" || message.channel.type === "group" || message.author.id === "243120137010413568") return;
 	if (message.channel.id !== "390239096519393282" && (message.content[0] === bot.prefix || message.content.toLowerCase().startsWith("!rank")|| message.content.toLowerCase().startsWith("!levels")) && message.channel.id !== "287042530825076736" && (!message.member.roles.exists("name", "Community Manager") && !message.member.roles.exists("name", "Developer"))) {
