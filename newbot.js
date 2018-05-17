@@ -109,36 +109,23 @@ client.on("ready", () => {
 	console.log(client.user.username+" is ready!")
 });
 
-client.on("message", async msg => {
-	const message = msg;
+client.on("message", async message => {
+	const message = message;
 	if (bot.blacklist.includes(message.author.id)) return;
-	if (msg.channel.type === "dm" || msg.channel.type === "group" || msg.author.id === "243120137010413568") return;
-	if (msg.channel.id !== "390239096519393282" && (msg.content[0] === bot.prefix || msg.content.toLowerCase().startsWith("!rank")|| msg.content.toLowerCase().startsWith("!levels")) && msg.channel.id !== "287042530825076736" && (!message.member.roles.exists("name", "Community Manager") && !message.member.roles.exists("name", "Developer"))) {
-	// if (msg.channel.id !== "390239096519393282" && (msg.content[0] === bot.prefix || botCommands.includes(msg.content.toLowerCase().split(" ")[0])) && msg.channel.id !== "287042530825076736") {
-		msg.author.send("Please don't use bot commands outside of #bot-commands")
-		return msg.delete()
+	if (message.channel.type === "dm" || message.channel.type === "group" || message.author.id === "243120137010413568") return;
+	if (message.channel.id !== "390239096519393282" && (message.content[0] === bot.prefix || message.content.toLowerCase().startsWith("!rank")|| message.content.toLowerCase().startsWith("!levels")) && message.channel.id !== "287042530825076736" && (!message.member.roles.exists("name", "Community Manager") && !message.member.roles.exists("name", "Developer"))) {
+	// if (message.channel.id !== "390239096519393282" && (message.content[0] === bot.prefix || botCommands.includes(message.content.toLowerCase().split(" ")[0])) && message.channel.id !== "287042530825076736") {
+		message.author.send("Please don't use bot commands outside of #bot-commands")
+		return message.delete()
 	}
-	if (cooldown.includes(msg.author.id) && msg.content[0] === bot.prefix) {
-		msg.author.send("Please wait " + cooldownTime + " seconds between sending commands!")
-		return msg.delete();
+	if (cooldown.includes(message.author.id) && message.content[0] === bot.prefix) {
+		message.author.send("Please wait " + cooldownTime + " seconds between sending commands!")
+		return message.delete();
 	}
 	//Do not change the order of the above if statements, or it'll break the bot.
 
-	if (msg.content.startsWith(bot.prefix + "ping")) {
-		cooloff(msg.author.id, message.member.roles.keyArray().length)
-		const message = await msg.channel.send("x ms");
-		if (message.createdTimestamp - msg.createdTimestamp > readJSON("./data/kingofping.json").ping) {
-			message.reply("Congratulations, you have accomplished the new highest ping! You are now the official **King of Ping**!")
-			writeJSON("./data/kingofping.json", {
-				username: msg.author.username,
-				ping: message.createdTimestamp - msg.createdTimestamp
-			})
-		}
-		return message.edit(message.createdTimestamp - msg.createdTimestamp + " ms");
-	}
-
-	if (msg.content.startsWith(bot.prefix + "help")) {
-		if (msg.content.replace(bot.prefix + "help") === "" || !helpList.includes(msg.content.replace(bot.prefix + "help ", "").toLowerCase() + ".js")) {
+	if (message.content.startsWith(bot.prefix + "help")) {
+		if (message.content.replace(bot.prefix + "help") === "" || !helpList.includes(message.content.replace(bot.prefix + "help ", "").toLowerCase() + ".js")) {
 			var sectionBlock = "▫" + helpList[0].split("")[0].toUpperCase() + helpList[0].substr(1).replace(".js", "")
 			for (var i = 1; i < helpList.length; i++) {
 				sectionBlock += "\n▫" + helpList[i].split("")[0].toUpperCase() + helpList[i].substr(1).replace(".js", "")
@@ -149,29 +136,44 @@ client.on("message", async msg => {
 				.addField("Sections", sectionBlock)
 				.setColor(getRandomColor())
 				.setThumbnail(client.user.avatarURL)
-			msg.channel.send(helpMessage)
-			cooloff(msg.author.id, message.member.roles.keyArray().length)
+			message.channel.send(helpMessage)
+			cooloff(message.author.id, message.member.roles.keyArray().length)
 			return;
 		} else {
-			var name = msg.content.replace(bot.prefix + "help ", "").split("")[0].toUpperCase() + msg.content.replace(bot.prefix + "help "+msg.content.replace(bot.prefix + "help ", "").split("")[0], "")
+			var name = message.content.replace(bot.prefix + "help ", "").split("")[0].toUpperCase() + message.content.replace(bot.prefix + "help "+message.content.replace(bot.prefix + "help ", "").split("")[0], "")
 			var helpMessage = new Discord.RichEmbed()
 				.setTitle("HordesBot " + name + " Help")
 				.setColor(getRandomColor())
 				.setThumbnail(client.user.avatarURL)
-			cooloff(msg.author.id, message.member.roles.keyArray().length)
-			msg.channel.send(bot.modules[msg.content.replace(bot.prefix + "help ", "").toLowerCase() + ".js"].help(helpMessage))
+			cooloff(message.author.id, message.member.roles.keyArray().length)
+			message.channel.send(bot.modules[message.content.replace(bot.prefix + "help ", "").toLowerCase() + ".js"].help(helpMessage))
 		}
 	}
 
-	if (msg.content[0] === bot.prefix && msg.channel.type !== "dm" && msg.channel.type !== "group" /*&& (msg.channel.id === "390239096519393282" || msg.channel.id === "287042530825076736")*/) {
-		var command = format(msg.content.split(" ")[0].replace(bot.prefix, "").toLowerCase())
+	if (message.content[0] === bot.prefix && message.channel.type !== "dm" && message.channel.type !== "group" /*&& (message.channel.id === "390239096519393282" || message.channel.id === "287042530825076736")*/) {
+		var command = format(message.content.split(" ")[0].replace(bot.prefix, "").toLowerCase())
 		for (var i = 0; i < moduleList.length; i++) {
 			if (typeof bot.modules[moduleList[i]].commands === "undefined") return;
 			if (bot.modules[moduleList[i]].commands.includes(command)) {
-				cooloff(msg.author.id, message.member.roles.keyArray().length)
-				bot.modules[moduleList[i]][command](msg)
+				cooloff(message.author.id, message.member.roles.keyArray().length)
+				bot.modules[moduleList[i]][command](message)
 			}
 		}
+	}
+})
+
+client.on("message", async message=>{
+	if (message.content.startsWith(bot.prefix + "ping")) {
+		cooloff(message.author.id, message.member.roles.keyArray().length)
+		const message = await message.channel.send("x ms");
+		if (message.createdTimestamp - message.createdTimestamp > readJSON("./data/kingofping.json").ping) {
+			message.reply("Congratulations, you have accomplished the new highest ping! You are now the official **King of Ping**!")
+			writeJSON("./data/kingofping.json", {
+				username: message.author.username,
+				ping: message.createdTimestamp - message.createdTimestamp
+			})
+		}
+		return message.edit(message.createdTimestamp - message.createdTimestamp + " ms");
 	}
 })
 
