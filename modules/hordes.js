@@ -8,7 +8,7 @@ function getRandomInt(min, max) {
 
 module.exports = class Hordes {
 	constructor(client) {
-		this.commands = ["itempedia"]; //Don't add the help command to this list.
+		this.commands = ["itempedia", "itemsearch"]; //Don't add the help command to this list.
 		this.client = client;
 		this.allNamesL = [];
 		this.allNames = [];
@@ -27,23 +27,38 @@ module.exports = class Hordes {
 	help(message) {
 		message.setTitle("Hordes Help")
 		.setDescription("This is the help menu for the Hordes.io based commands, not for actually playing Hordes.io")
-		.addField(bot.prefix+"itemsearch", "Can't remember the name for an item? Use this command to look it up.");
+		.addField(bot.prefix+"itemsearch", "Can't remember the name for an item? Use this command to look it up.")
+		.addField(bot.prefix+"itempedia", "Look up possible stats for different items (needs full item name)");
 		return message;
 	}
-	// itemsearch(message) {
-		// var raw = message.content.replace(bot.prefix+"itemsearch", "")
-		// var args = message.content.replace(bot.prefix+"itemsearch", "").split(" ")
-	// 	if (this.allNames.includes(raw.toLowerCase())) {
-	// 		let index = this.allNames.indexOf(raw.toLowerCase())
-	// 		return message.reply("One match found: `")
-	// 	}
-	// 	// let msg = this.allNames.join("").substr(0,2000)
-	// 	// message.channel.send(msg)
-	// }
+	itemsearch(message) {
+		var raw = message.content.replace(bot.prefix+"itemsearch ", "");
+		var args = message.content.replace(bot.prefix+"itemsearch ", "").split(" ");
+		if (this.allNamesL.includes(raw.toLowerCase())) {
+			let index = this.allNamesL.indexOf(raw.toLowerCase());
+			return message.reply("One match found: `"+this.allNames[index]+"`");
+		}
+		else {
+			var list = [];
+			for (let i in this.allNamesL) {
+				if (this.allNamesL[i].includes(raw.toLowerCase())) list.push(this.allNames[i])
+			}
+			if (list.length > 0) {
+				var re = "**List of possible matches for __"+raw+"__:**\n";
+				for (let i in list) {
+					re += "\n`"+list[i]+"`";
+				}
+				message.reply(re);
+			}
+			else message.reply("No items found!");
+		}
+		// let msg = this.allNames.join("").substr(0,2000)
+		// message.channel.send(msg)
+	}
 	itempedia(message) {
-		var raw = message.content.replace(bot.prefix+"itempedia ", "")
-		var args = message.content.replace(bot.prefix+"itempedia ", "").split(" ")
-		if (!this.allNamesL.includes(raw.toLowerCase())) return message.reply("That item does not exist!")
+		var raw = message.content.replace(bot.prefix+"itempedia ", "");
+		var args = message.content.replace(bot.prefix+"itempedia ", "").split(" ");
+		if (!this.allNamesL.includes(raw.toLowerCase())) return message.reply("That item does not exist! (Perhaps use the `$itemsearch` command to look it up instead?)");
 		let names = Object.getOwnPropertyNames(equipment)
 		let object;
 		for (let i in Object.getOwnPropertyNames(equipment)) {

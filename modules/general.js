@@ -8,7 +8,8 @@ function readJSON(location) {
 module.exports = class General {
 	constructor(client) {
 		this.client = client
-		this.commands = ["info", "suggestcommand", "kingofping"]
+		this.commands = ["info", "suggestcommand", "kingofping", "uptime"]
+		this.start = Date.now();
 	}
 	info(message) {
 		var embed = new Discord.RichEmbed()
@@ -33,4 +34,19 @@ module.exports = class General {
 		var data = readJSON("./data/kingofping.json")
 		message.reply(`The current King of Ping is **${data.username}** with a ping of **${data.ping}**`)
 	}
+	uptime(message) {
+		message.reply("HordesBot has been online for "+msToTime(Date.now()-this.start))
+	}
+}
+
+//from https://stackoverflow.com/a/9763769/7552088
+function msToTime(s) {
+  var ms = s % 1000;
+  s = (s - ms) / 1000;
+  var secs = s % 60;
+  s = (s - secs) / 60;
+  var mins = s % 60;
+  var hrs = (s - mins) / 60;
+
+  return "`"+hrs + ':' + mins + ':' + secs + '.' + ms+"`";
 }

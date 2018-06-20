@@ -128,6 +128,7 @@ module.exports = class Fun {
 			.addField(this.bot.prefix + "8ball <question>", "Ask the amazing 8ball a question")
 			.addField(this.bot.prefix + "avatar <mention(optional)>", "Gives you your avatar URL, or that of the mentioned user.")
 			.addField(this.bot.prefix + "acronym <some letters>", "Generates a random list of words that could be the meaning of the given acronym.")
+			.addField(this.bot.prefix + "batch", "yes. batch.")
 		return message
 	}
 	nickreset(message) {

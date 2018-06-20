@@ -15,7 +15,8 @@ if (typeof options.token === "undefined") return console.log("Please pass a toke
 global.bot = {
 	modules: {},
 	prefix: "$",
-	blacklist: []
+	blacklist: [],
+	welcomes: []
 }
 global.moduleList = []
 global.helpList = []
