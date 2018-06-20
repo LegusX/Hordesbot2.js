@@ -165,6 +165,7 @@ client.on("message", message => {
 })
 
 client.on("message", async msg=>{
+	try {
 	if (msg.content.startsWith(bot.prefix + "ping")) {
 		cooloff(msg.author.id, msg.member.roles.keyArray().length)
 		const message = await msg.channel.send("x ms");
@@ -172,11 +173,12 @@ client.on("message", async msg=>{
 			message.reply("Congratulations, you have accomplished the new highest ping! You are now the official **King of Ping**!")
 			writeJSON("./data/kingofping.json", {
 				username: msg.author.username,
-				ping: msg.createdTimestamp - msg.createdTimestamp
+				ping: message.createdTimestamp - msg.createdTimestamp
 			})
 		}
 		return message.edit(message.createdTimestamp - msg.createdTimestamp + " ms");
 	}
+}catch(e){console.error(e)}
 })
 
 client.on("error", (e)=>{
