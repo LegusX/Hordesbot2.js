@@ -1,5 +1,6 @@
 //Template for new modules
-const Discord = require("discord.js")
+const Discord = require("discord.js");
+const fetch = require("node-fetch");
 
 //Totally stolen from the MDN docs :D
 function getRandomInt(min, max) {
@@ -8,7 +9,7 @@ function getRandomInt(min, max) {
 
 module.exports = class Hordes {
 	constructor(client) {
-		this.commands = ["itempedia", "itemsearch"]; //Don't add the help command to this list.
+		this.commands = ["itempedia", "itemsearch", "player"]; //Don't add the help command to this list.
 		this.client = client;
 		this.allNamesL = [];
 		this.allNames = [];
@@ -28,7 +29,8 @@ module.exports = class Hordes {
 		message.setTitle("Hordes Help")
 		.setDescription("This is the help menu for the Hordes.io based commands, not for actually playing Hordes.io")
 		.addField(bot.prefix+"itemsearch", "Can't remember the name for an item? Use this command to look it up.")
-		.addField(bot.prefix+"itempedia", "Look up possible stats for different items (needs full item name)");
+		.addField(bot.prefix+"itempedia", "Look up possible stats for different items (needs full item name)")
+		.addField(bot.prefix+"player <name>", "Looks up information about the given player")
 		return message;
 	}
 	itemsearch(message) {
@@ -79,11 +81,33 @@ module.exports = class Hordes {
 			let stats = equip.stats[statNames[i]];
 			let low = (stats.float)?(Math.round((level*(stats.multi*stats.low)+stats.base) * 10) / 10).toFixed(1):Math.ceil((level*(stats.multi*stats.low)+stats.base))
 			let high = (stats.float)?(Math.round((level*(stats.multi*stats.high)+stats.base) * 10) / 10).toFixed(1):Math.ceil((level*(stats.multi*stats.high)+stats.base))
-			embed.addField(statNames[i], low+"-"+high, true)
+			embed.addField(statNames[i], low+"-"+high, true);
 		}
-		message.channel.send(embed)
+		message.channel.send(embed);
 	}
-}
+	player(message) {
+		let p = message.content.replace(bot.prefix+"player ", "");
+		fetch(`https://www.flareco.net/api/hordes.io.api.php?username=${p}&all`)
+		.then((r)=>r.json())
+		.then((j)=>{
+			let embed = new Discord.RichEmbed()
+			.setTitle(j.name)
+			.addField("Level", j.level, true)
+			.addField("Class", j.class.replace(j.class[0], j.class[0].toUpperCase()), true)
+			.addField("Fame", j.fame, true)
+			.addField("Clan", j.clan, true)
+			.addField("Faction", j.faction, true)
+			.addField("EXP", j.exp+"/"+j.needexp+" ("+((Math.round(((j.exp/j.needexp)*100)*100))/100)+"%)", true)
+			.setFooter("Stats requested by: "+message.author.username)
+			.setThumbnail("https://hordes.io/data/class/class_"+j.class+".png")
+			.setColor((j.faction === "Bloodlust")?"F1454D": "58CEFF");
+			message.channel.send(embed);
+		})
+		.catch(e=>{
+			message.reply("**Something went wrong! Either one of these two things may have occurred:**\n+The specified user does not exist or does not have a unique name\n+Something has gone wrong with the sketchy API that Legus is using.\n\nIf you are having troubles and you know for a fact that the player you're trying to look up is real, please go bug Legus.");
+		});
+	}
+};
 
 global.equipment = {
     sword: {
