@@ -10,6 +10,10 @@ module.exports = class General {
 		this.client = client
 		this.commands = ["info", "suggestcommand", "kingofping", "uptime"]
 		this.start = Date.now();
+		
+		this.client.on("guildMemberAdd", (member)=>{
+			this.client.channels.get("221772925282287627").send(`Hello and welcome, ${member}, to the Hordes.io Discord server! Please take a moment to read <#240612091369750528>.`);
+		})
 	}
 	info(message) {
 		var embed = new Discord.RichEmbed()
@@ -48,5 +52,5 @@ function msToTime(s) {
   var mins = s % 60;
   var hrs = (s - mins) / 60;
 
-  return "`"+hrs + ':' + mins + ':' + secs + '.' + ms+"`";
+  return "`"+hrs + ' hours, ' + mins + ' minutes, ' + secs + '.' + ms+" seconds`";
 }

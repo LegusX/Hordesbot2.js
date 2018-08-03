@@ -13,16 +13,17 @@ function userScore(id) {
 	return [user["accepted"], user["denied"]];
 }
 
-function updateReports(member, good, message) {
-	if (typeof readJSON("./data/reportdata.json")[member.user.id] === "undefined") addUser(member.user.id, good)
+function updateReports(user, good, client) {
+	let member = client.guilds.get("221772925282287627").members.get(user.id)
+	if (typeof readJSON("./data/reportdata.json")[user.id] === "undefined") addUser(user.id, good)
 	else {
 		var data = readJSON("./data/reportdata.json")
-		data[member.user.id][good]++
-		if (data[member.user.id].penalty >= 3) message.channel.overwritePermissions(member.user, {
+		data[user.id][good]++
+		if (data[user.id].penalty >= 3) client.channels.get("382612925275308032").overwritePermissions(user, {
 			"SEND_MESSAGES": false
 		})
-		if (data[member.user.id].accepted >= 10 && !member.roles.array().includes("348316016742498305")) member.addRole("348316016742498305")
-		if (data[member.user.id].accepted >= 200 && !member.roles.has("408098180773969920")) member.addRole("408098180773969920");
+		if (data[user.id].accepted >= 10 && !member.roles.array().includes("348316016742498305")) member.addRole("348316016742498305")
+		if (data[user.id].accepted >= 200 && !member.roles.has("408098180773969920")) member.addRole("408098180773969920");
 		writeJSON("./data/reportdata.json", data)
 	}
 	return;
@@ -42,62 +43,120 @@ function addUser(id, adp) {
 
 module.exports = class Reports {
 	constructor(client, bot) {
-		reportcount++
-		if (reportcount > 1) process.exit()
+		// reportcount++
+		// if (reportcount > 1) process.exit()
 		this.client = client
-		this.bot = bot;
-		this.commands = ["clearguardian"]
+		this.bot = bot
+		this.commands = ["clearguardian", "reportscore", "asdf"]
 		client.on("messageReactionAdd", (reaction, user) => {
 			var message = reaction.message;
-			if (reaction.message.channel.id !== "382612925275308032") return;
-			if (user.id === "240613206442246144") return;
-			if (!message.guild.member(user).roles.exists("id", "227720287083298816") /*CM role*/ && user.id !== "117993898537779207" /*Dek*/ && user.id !== "349377841416110081" /*dhwty*/ ) return;
-			if (!bot.reactionsWatch.includes(reaction.emoji.id)) return;
-			if (message.reactions.exists(r => r.emoji.name === "GM")) return;
-			if (message.reactions.exists(r => r.emoji.name === "🔒")) return;
-			switch (reaction.emoji.id) {
-				case bot.reactionsWatch[0]:
-					updateReports(message.member, "denied", message);
-					var channel = client.channels.get("388458554907951105");
-					var pos, neg;
-					[pos, neg] = userScore(message.author.id);
-					var text = `Report Denied by ${user.username}\nUsername: ${message.author.username}\nUser score: +${pos} -${neg}`;
-					channel.send(text, {code: true, disableEveryone: true});
-					var report = `**Report:**\n${message.author}: ${message.content}`;
-					if (message.attachments.size > 0) {
-						report += "\nAttachments:\n";
-						message.attachments.forEach(attachment => {
-							report += attachment.url + "\n";
-						});
+			if (reaction.message.channel.id === "382612925275308032") {
+				if (user.id === "240613206442246144") return;
+				if (!message.guild.member(user).roles.exists("id", "227720287083298816") /*CM role*/ && user.id !== "117993898537779207" /*Dek*/ && user.id !== "349377841416110081" /*dhwty*/ ) return;
+				if (!bot.reactionsWatch.includes(reaction.emoji.id)) return;
+				if (message.reactions.exists(r => r.emoji.name === "GM")) return;
+				if (message.reactions.exists(r => r.emoji.name === "🔒")) return;
+				var ruser;
+				if (message.author.id !== "243120137010413568") {
+					switch (reaction.emoji.id) {
+						case bot.reactionsWatch[0]:
+							updateReports(message.member.user, "denied", this.client);
+							var channel = client.channels.get("388458554907951105");
+							var pos, neg;
+							[pos, neg] = userScore(message.author.id);
+							var text = `Report Denied by ${user.username}\nUsername: ${message.author.username}\nUser score: +${pos} -${neg}`;
+							channel.send(text, {code: true, disableEveryone: true});
+							var report = `**Report:**\n${message.author}: ${message.content}`;
+							if (message.attachments.size > 0) {
+								report += "\nAttachments:\n";
+								message.attachments.forEach(attachment => {
+									report += attachment.url + "\n";
+								});
+							}
+							channel.send(report + "\n- - -");
+							message.react("🔒");
+							break;
+						case bot.reactionsWatch[1]:
+							updateReports(message.member.user, "accepted", this.client);
+							var channel = client.channels.get("388458477732888606");
+							var pos, neg;
+							[pos, neg] = userScore(message.author.id);
+							var text = `Report Accepted by ${user.username}\nUsername: ${message.author.username}\nUser score: +${pos} -${neg}`;
+							channel.send(text, {code: true, disableEveryone: true});
+							var report = `**Report:**\n${message.author}: ${message.content}`;
+							if (message.attachments.size > 0) {
+								report += "\nAttachments:\n";
+								message.attachments.forEach(attachment => {
+									report += attachment.url + "\n";
+								});
+							}
+							channel.send(report + "\n- - -");
+							message.react("🔒");
+							break;
+						case bot.reactionsWatch[2]:
+							updateReports(message.member.user, "penalty", this.client);
+							message.delete();
 					}
-					channel.send(report + "\n- - -");
-					message.react("🔒");
-					break;
-				case bot.reactionsWatch[1]:
-					updateReports(message.member, "accepted", message);
-					var channel = client.channels.get("388458477732888606");
-					var pos, neg;
-					[pos, neg] = userScore(message.author.id);
-					var text = `Report Accepted by ${user.username}\nUsername: ${message.author.username}\nUser score: +${pos} -${neg}`;
-					channel.send(text, {code: true, disableEveryone: true});
-					var report = `**Report:**\n${message.author}: ${message.content}`;
-					if (message.attachments.size > 0) {
-						report += "\nAttachments:\n";
-						message.attachments.forEach(attachment => {
-							report += attachment.url + "\n";
-						});
-					}
-					channel.send(report + "\n- - -");
-					message.react("🔒");
-					break;
-				case bot.reactionsWatch[2]:
-					updateReports(message.member, "penalty", message);
-					message.delete();
 				}
+				else {
+					switch (reaction.emoji.id) {
+						case bot.reactionsWatch[0]:
+							ruser = message.mentions.users.first()
+							updateReports(ruser, "denied", this.client)
+							var channel = client.channels.get("388458554907951105");
+							var pos, neg;
+							[pos, neg] = userScore(ruser.id);
+							var text = `Report Denied by ${user.username}\nUsername: ${ruser.username}\nUser score: +${pos} -${neg}`;
+							channel.send(text, {code: true, disableEveryone: true});
+							var report = `${message.content}`;
+							channel.send(report + "\n- - -");
+							message.react("🔒");
+							break;
+							
+						case bot.reactionsWatch[1]:
+							ruser = message.mentions.users.first()
+							updateReports(ruser, "accepted", this.client)
+							var channel = client.channels.get("388458477732888606");
+							var pos, neg;
+							[pos, neg] = userScore(ruser.id);
+							var text = `Report Accepted by ${user.username}\nUsername: ${ruser.username}\nUser score: +${pos} -${neg}`;
+							channel.send(text, {code: true, disableEveryone: true});
+							var report = `${message.content}`;
+							channel.send(report + "\n- - -");
+							message.react("🔒");
+							break;
+						
+						case bot.reactionsWatch[2]:
+							updateReports(message.mentions.users.first(), "penalty", this.client);
+							message.delete();
+					}
+				}
+			}
+			else if (reaction.message.channel.id === "467532445038805004" && message.guild.member(user).roles.exists("id", "348316016742498305")) {
+				if (typeof bot.modules["ingame.js"] === "undefined") return;
+				if (bot.reactionsWatch[2] !== reaction.emoji.id) return;
+				let list = bot.modules["ingame.js"].messages
+				if (!list.includes(reaction.message.content)) return;
+				let pre = `**Message reported by ${user}**\n*Note: Message in red is the reported message, all others are there for context*`
+				let post = "\n```diff"
+				let index = list.indexOf(reaction.message.content);
+				console.log(index)
+				for (let i = index-5; i < index+6; i++) {
+					if (list[i] === undefined) continue;
+					let mid = "\n";
+					if (i === index) mid+="-";
+					mid+=list[i];
+					mid = mid.replace("<:Vanguard:238319079130136577>", "").replace("<:Bloodlust:238319126991339520>", "").replace("**", "").replace("**", "");
+					post+=mid;
+				}
+				post+="\n```\n=======================================";
+				let final = pre+post;
+				this.client.channels.get("382612925275308032").send(final);
+			}
 		});
 	}
 	clearguardian(message) {
-		if (!message.member.roles.exists("name", "Community Manager")) return;
+		if (message.author.id !== "227376221351182337") return;
 		let data = readJSON("./data/reportdata.json")
 		let ids = Object.getOwnPropertyNames(data)
 		for (var i=0;i<ids.length;i++) {
@@ -107,5 +166,38 @@ module.exports = class Reports {
 			}
 		}
 		message.reply("Success")
+	}
+	help(message) {
+		message.addField("$reports", "Shows you how many reports you have made that have been accpeted or denied.")
+		.addField("$clearguardian", "Special command for legus only")
+		return message;
+	}
+	reportscore(message) {
+		console.log("help meh")
+		if (message.mentions.users.length < 1) {
+			let score = userScore(message.author.id)
+			let embed = new Discord.RichEmbed()
+			.setTitle("Report Score for "+message.author.username)
+			.setThumbnail(message.author.avatarURL)
+			.setColor(getRandomColor())
+			.addField("Accepted", score[0]+" reports", true)
+			.addField("Denied", score[1]+" reports", true)
+			message.channel.send(embed)
+		}
+		else{
+			let user = message.mentions.users.first();
+			let score = userScore(user.id);
+			let embed = new Discord.RichEmbed()
+			.setTitle("Report Score for "+user.username)
+			.setThumbnail(user.avatarURL)
+			.setColor(getRandomColor())
+			.addField("Accepted", score[0]+" reports", true)
+			.addField("Denied", score[1]+ " reports", true)
+			.setFooter(`Report score requested by ${message.author}`);
+			message.channel.send(embed);
+		}
+	}
+	asdf(message) {
+		message.reply("what is life. asdfalsidjfbkshdgijafuhojklsnDFBHIuasojlkeghfyawibuelkjfmdkzANKLsnfbhsOIAJdlfkNABJIHOSFKLMSNABJHDGOIJSLKDMGFS")
 	}
 }

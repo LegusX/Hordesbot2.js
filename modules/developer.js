@@ -49,7 +49,10 @@ module.exports = class Developer {
 		});
 	}
 	stop(message) {
-		if (admins.includes(message.author.id)) process.exit()
+		if (admins.includes(message.author.id))  {
+			message.reply("stopping/restarting bot")
+			process.exit()
+		}
 	}
 	mval(input) {
 		console.log(chalk.yellow(input));

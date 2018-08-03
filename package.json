@@ -17,10 +17,12 @@
   },
   "homepage": "https://github.com/LegusX/Hordesbot2.js#readme",
   "dependencies": {
+    "garfield": "^1.1.2",
     "node-fetch": "^2.1.2",
     "random-dilbert": "^1.1.0",
     "random-words": "^1.1.0",
     "socket.io": "^2.1.1",
+    "socket.io-client": "^2.1.1",
     "uws": "^10.148.1"
   }
 }

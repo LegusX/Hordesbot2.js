@@ -46,6 +46,10 @@ function cooloff(id, roles) {
 	}, 1000 * cooldownTime * 1-(0.05*roles), id)
 }
 
+global.getRandomInt = function (min, max) {
+	return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+}
+
 const number = {
 	"0": "zero",
 	"1": "one",
