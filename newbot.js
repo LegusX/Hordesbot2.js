@@ -29,7 +29,7 @@ bot.blacklist = JSON.parse(fs.readFileSync("./data/blacklist.json"))
 botCommands = ["-play", "-queue", "!rank", "!levels", "-join", "-select", "-nowplaying", "-np"]
 
 //Pulled from: https://stackoverflow.com/questions/1484506/random-color-generator
-function getRandomColor() {
+global.getRandomColor = function() {
 	var letters = '0123456789ABCDEF';
 	var color = '#';
 	for (var i = 0; i < 6; i++) {
@@ -116,13 +116,21 @@ client.on("ready", () => {
 
 client.on("message", message => {
 	try {
-	if (bot.blacklist.includes(message.author.id)) return;
 	if (message.channel.type === "dm" || message.channel.type === "group" || message.author.id === "243120137010413568") return;
 	if (message.channel.id !== "390239096519393282" && (message.content[0] === bot.prefix || message.content.toLowerCase().startsWith("!rank")|| message.content.toLowerCase().startsWith("!levels")) && message.channel.id !== "287042530825076736" && (!message.member.roles.exists("name", "Community Manager") && !message.member.roles.exists("name", "Developer"))) {
 	// if (message.channel.id !== "390239096519393282" && (message.content[0] === bot.prefix || botCommands.includes(message.content.toLowerCase().split(" ")[0])) && message.channel.id !== "287042530825076736") {
 		message.author.send("Please don't use bot commands outside of #bot-commands")
 		return message.delete()
 	}
+	if (message.content.split(" ").length < 2 && (message.content.toLowerCase().split(" ")[0] === "." || message.content.toLowerCase().split(" ")[0].includes("dot")) && message.content.toLowerCase().split(" ")[0]!== "o.o" && message.content.split(" ")[0] !== "...") {
+		message.delete();
+		message.author.send("FOR THE LOVE OF HORDES, STOP SENDING PERIODS\n*Pressing the escape key works just as well to clear the 'new messages' blue thing at the top*");
+	}
+	if (message.channel.id === "230982345648242698" && !message.content.includes("discord.gg")) {
+		message.delete()
+		message.author.send("Please do not talk in <#230982345648242698>!")
+	}
+	if (bot.blacklist.includes(message.author.id)) return;
 	if (cooldown.includes(message.author.id) && message.content[0] === bot.prefix) {
 		message.author.send("Please wait " + cooldownTime + " seconds between sending commands!")
 		return message.delete();
@@ -170,6 +178,7 @@ client.on("message", message => {
 
 client.on("message", async msg=>{
 	try {
+	if (bot.blacklist.includes(msg.author.id)) return;
 	if (msg.content.startsWith(bot.prefix + "ping")) {
 		cooloff(msg.author.id, msg.member.roles.keyArray().length)
 		const message = await msg.channel.send("x ms");

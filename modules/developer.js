@@ -6,6 +6,7 @@ const app = require("http").createServer(()=>{});
 const io = require("socket.io")(app);
 
 const admins = ["227376221351182337", "190313064367652864", "117993898537779207", "126288853576318976"]
+const stoppers = ["301918971274199041", "327427652254302209", "392107212354617394", "235560734350639104"];
 
 module.exports = class Developer {
 	constructor(client) {
@@ -49,10 +50,12 @@ module.exports = class Developer {
 		});
 	}
 	stop(message) {
-		if (admins.includes(message.author.id))  {
-			message.reply("stopping/restarting bot")
-			process.exit()
+		if (admins.includes(message.author.id) || stoppers.includes(message.author.id))  {
+			message.reply("stopping/restarting bot").then(()=>{
+				process.exit();
+			});
 		}
+		else return message.reply("Screw off.");
 	}
 	mval(input) {
 		console.log(chalk.yellow(input));

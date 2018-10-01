@@ -1,4 +1,5 @@
 var fs = require("fs");
+var Discord = require("discord.js")
 
 function readJSON(location) {
 	return JSON.parse(fs.readFileSync(location))
@@ -37,19 +38,20 @@ function addUser(id, adp) {
 		denied: 0,
 		penalty: 0
 	}
-	data[id][adp]++
-		writeJSON("./data/reportdata.json", data)
+	data[id][adp]++;
+	writeJSON("./data/reportdata.json", data);
 }
 
 module.exports = class Reports {
 	constructor(client, bot) {
 		// reportcount++
 		// if (reportcount > 1) process.exit()
-		this.client = client
-		this.bot = bot
-		this.commands = ["clearguardian", "reportscore", "asdf"]
+		this.client = client;
+		this.bot = bot;
+		this.commands = ["clearguardian", "reportscore", "reportlb"];
 		client.on("messageReactionAdd", (reaction, user) => {
 			var message = reaction.message;
+			if (bot.blacklist.includes(message.author.id)) return;
 			if (reaction.message.channel.id === "382612925275308032") {
 				if (user.id === "240613206442246144") return;
 				if (!message.guild.member(user).roles.exists("id", "227720287083298816") /*CM role*/ && user.id !== "117993898537779207" /*Dek*/ && user.id !== "349377841416110081" /*dhwty*/ ) return;
@@ -168,13 +170,13 @@ module.exports = class Reports {
 		message.reply("Success")
 	}
 	help(message) {
-		message.addField("$reports", "Shows you how many reports you have made that have been accpeted or denied.")
+		message.addField("$reportscore", "Shows you how many reports you have made that have been accpeted or denied.")
 		.addField("$clearguardian", "Special command for legus only")
 		return message;
 	}
 	reportscore(message) {
-		console.log("help meh")
-		if (message.mentions.users.length < 1) {
+		try  {
+		if (message.mentions.users.array().length < 1) {
 			let score = userScore(message.author.id)
 			let embed = new Discord.RichEmbed()
 			.setTitle("Report Score for "+message.author.username)
@@ -193,11 +195,13 @@ module.exports = class Reports {
 			.setColor(getRandomColor())
 			.addField("Accepted", score[0]+" reports", true)
 			.addField("Denied", score[1]+ " reports", true)
-			.setFooter(`Report score requested by ${message.author}`);
+			.setFooter(`Report score requested by ${message.author.username}`);
 			message.channel.send(embed);
 		}
+		}
+		catch(e){message.reply("```"+e+"```")}
 	}
-	asdf(message) {
-		message.reply("what is life. asdfalsidjfbkshdgijafuhojklsnDFBHIuasojlkeghfyawibuelkjfmdkzANKLsnfbhsOIAJdlfkNABJIHOSFKLMSNABJHDGOIJSLKDMGFS")
+	reportlb(message) {
+		let sorted = Object.values
 	}
 }
