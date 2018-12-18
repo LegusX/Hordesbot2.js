@@ -24,6 +24,7 @@ global.areas = [
 	}
 ]
 
+
 //Totally stolen from the MDN docs :D
 function getRandomInt(min, max) {
 	return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
@@ -31,11 +32,20 @@ function getRandomInt(min, max) {
 
 module.exports = class Idle {
 	constructor(client) {
-		this.commands = ["create", "mychars", "resetdata", "select", "sendto", "readdata"]; //Don't add the help command to this list.
+		this.commands = ["create", "mychars", "resetdata", "select", "sendto", "readdata", "sad"]; //Don't add the help command to this list.
 		this.client = client
 		for (var i in areas) {
 			areas[i].index = i
 		}
+		client.on("message", message=>{
+			if (!coolit.includes(message.author.id)) {
+				coolit.push(message.author.id);
+				let data = read.readUser(message.author.id);
+				if (data.selected !== null && data.characters[data.selected].area !== null) {
+					
+				}
+			}
+		});
 	}
 	help(message) {
 		message.setTitle("Idle Help")
@@ -147,6 +157,9 @@ module.exports = class Idle {
 			read.writeUser(message.author.id, user)
 			message.reply("Successfully selected character **"+name+"**!")
 		}
+	}
+	sad(message) {
+		message.guild.getChannel("517158916396941313").delete();
 	}
 	sendto(message) {
 		message.channel.send("⚠This command is currently under construction! Watch out for falling `if` statements!⚠");

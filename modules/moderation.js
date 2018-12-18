@@ -34,7 +34,7 @@ module.exports = class Moderation {
 		message.channel.send(`User: ${message.mentions.users.first()} has been succesfully whitelisted.`)
 	}
 	lock(message) {
-		if(!message.member.roles.exists("name", "Community Manager") && !message.member.roles.exists("name", "Developer")) return;
+		if(!message.member.roles.exists("name", "Community Manager") && !message.member.roles.exists("name", "Developer") && !msg.member.roles.has("513058713490292737")) return;
 		let time = isNaN(message.content.split(" ")[1])?undefined:Number(message.content.split(" ")[1])
 		if(!time) return message.reply("Please specify a number of minutes to lock this channel for!")
 		message.channel.overwritePermissions(message.guild.id, {
@@ -51,7 +51,7 @@ module.exports = class Moderation {
 		}, time*60000)
 	}
 	clear(message) {
-		if(!message.member.roles.exists("name", "Community Manager") && !message.member.roles.exists("name", "Developer")) return;
+		if(!message.member.roles.exists("name", "Community Manager") && !message.member.roles.exists("name", "Developer")  && !msg.member.roles.has("513058713490292737")) return;
 		let num = isNaN(message.content.split(" ")[1])?undefined:Number(message.content.split(" ")[1])
 		if(!num) return message.reply("Please specify a number of messages to delete!")
 		message.channel.bulkDelete(num)
