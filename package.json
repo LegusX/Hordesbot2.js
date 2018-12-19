@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/LegusX/Hordesbot2.js#readme",
   "dependencies": {
+    "command-line-args": "^5.0.2",
+    "discord.js": "^11.4.2",
     "garfield": "^1.1.2",
     "node-fetch": "^2.1.2",
     "random-dilbert": "^1.1.0",
